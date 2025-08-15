@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Only One, Asti</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="index.html">Asti</a></li>
+                <li><a href="gallery.html">Asti with Her Boyfriend</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <div id="page-home" class="page active">
+            <section class="hero-section">
+
+                <div class="hero-content">
+                    <h1 class="special-name">Asti Intan Prasuci</h1>
+                    <p class="subtitle">"You are not just a star in my sky, you are the entire constellation that guides
+                        me home."</p>
+
+                    <div id="countdown">
+                        <div class="timer-box"><span id="days">0</span><p>Days</p></div>
+                        <div class="timer-box"><span id="hours">0</span><p>Hours</p></div>
+                        <div class="timer-box"><span id="minutes">0</span><p>Minutes</p></div>
+                        <div class="timer-box"><span id="seconds">0</span><p>Seconds</p></div>
+                    </div>
+
+                    <!-- Tombol Navigasi Baru -->
+                    <a href="gallery.html" class="cta-button secondary">Kunjungi Galeri</a>
+                </div>
+
+                <!-- SVG Bunga Matahari Megah -->
+                <div id="sunflower-container" onclick="openLetter()">
+                    <svg class="sunflower" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M 100 400 C 100 350, 110 250, 100 150" stroke="#006400" stroke-width="8" fill="none" stroke-linecap="round" />
+                        <path d="M104 300 C 150 280, 140 220, 104 240" fill="#2E8B57" />
+                        <path d="M96 250 C 50 230, 60 170, 96 190" fill="#3CB371" />
+                        <g class="sunflower-head">
+                            <g class="petals-back">
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(22.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(67.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(112.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(157.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(202.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(247.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(292.5 100 100)" />
+                                <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(337.5 100 100)" />
+                            </g>
+                            <g class="petals-front">
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(0 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(45 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(90 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(135 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(180 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(225 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(270 100 100)" />
+                                <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(315 100 100)" />
+                            </g>
+                            <circle cx="100" cy="100" r="30" fill="#8B4513" />
+                            <circle cx="100" cy="100" r="20" fill="#6B3A0E" />
+                        </g>
+                    </svg>
+                </div>
+            </section>
+        </div>
+
+        <!-- Overlay Surat -->
+        <div id="letter-overlay">
+            <span class="close-overlay-button" onclick="closeLetterOverlay()">&times;</span>
+            <div class="letter-content">
+                <h2>Untukmu, My Favorit Girl</h2>
+                <p>Sayang, terkadang kata-kata terasa tidak cukup untuk menjelaskan betapa bersyukurnya aku atas
+                    kehadiranmu...<br><br>Terima kasih telah menjadi kompas di saat aku tersesat, menjadi jangkar di tengah
+                    badai, dan menjadi rumah untuk hatiku yang lelah. Setiap detik bersamamu adalah anugerah.<br>
+                    Kalimat-Kalimat yang aku susun sebelumnya di atas itu hanya ucapan mula mula atas apapun
+                    yang telah kamu berikan kepadaku, sayang</p>
+                <button class="cta-button" onclick="triggerBirthdaySurprise()">Lanjutkan...</button>
+            </div>
+            <div id="birthday-surprise">
+                <h1 class="birthday-title">Selamat Ulang Tahun ke-25, Cintaku!</h1>
+                <p class="birthday-subtitle">Semoga semua mimpimu terwujud.</p>
+                <div class="birthday-wish">
+                    <p>Di hari yang istimewa ini, aku tidak punya banyak kata selain doa dan harapan terbaik untukmu. Semoga
+                        kamu selalu dikelilingi kebahagiaan, diberikan kesehatan, dan dimudahkan dalam setiap langkahmu
+                        untuk meraih semua yang kamu impikan. Terima kasih telah menjadi cahaya, sumber kekuatan, dan alasan
+                        di balik senyumku setiap hari. Aku sangat beruntung memilikimu.</p>
+                </div>
+                <button class="cta-button" onclick="window.location.href='gallery.html'">Lihat Kisah Kita</button>
+            </div>
+        </div>
+    </main>
+
+    <!-- Music Player -->
+    <audio id="background-music" loop>
+        <source src="https://github.com/samuelgoddard/blog/raw/master/babimyrs.mp3" type="audio/mpeg">
+    </audio>
+    <div id="music-control">
+        <svg id="play-icon" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        <svg id="pause-icon" viewBox="0 0 24 24" style="display:none"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
+    </div>
+
+    <!-- Fade to Love overlay -->
+    <div id="love-fade" aria-hidden="true">
+        <div class="love-caption">
+            <p>“Every version of me loves every version of you.”</p>
+        </div>
+    </div>
+
+    <!-- >>> PRELOAD semua gambar dari versi sebelumnya (agar overlay/anim mulus) <<< -->
+    <div id="preload-images" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;">
+        <img src="./Assets/gallery/IMG-20250707-WA0022.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0023.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0025.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0026.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0027.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0028.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0029.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0030.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0031.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0038.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0041.jpg" alt="">
+        <img src="./Assets/gallery/CANTIK.jpg" alt="">
+        <img src="./Assets/gallery/1.jpg" alt="">
+        <img src="./Assets/gallery/12.jpg" alt="">
+        <img src="./Assets/gallery/IMG-20250707-WA0061.jpg" alt="">
+    </div>
+
+    <script src="Script.Js"></script>
+</body>
+</html>
