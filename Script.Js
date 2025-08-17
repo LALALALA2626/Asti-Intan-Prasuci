@@ -67,35 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
   var countdownInterval = setInterval(updateCountdown, 1000);
   updateCountdown();
 
-  // ===== Music control (berjalan hanya setelah user gesture; kompatibel iOS) =====
-  var isMusicPlaying = false;
-  function toggleMusic() {
-    if (!music) return;
-    if (!isMusicPlaying) {
-      var p = music.play();
-      if (p && typeof p.then === 'function') {
-        p.then(function () {
-          isMusicPlaying = true;
-          if (playIcon) playIcon.style.display = 'none';
-          if (pauseIcon) pauseIcon.style.display = 'block';
-        }).catch(function () {
-          // Autoplay diblokir — tunggu gesture berikutnya
-        });
-      }
-    } else {
-      music.pause();
-      isMusicPlaying = false;
-      if (playIcon) playIcon.style.display = 'block';
-      if (pauseIcon) pauseIcon.style.display = 'none';
-    }
-  }
-  if (musicControl) {
-    musicControl.addEventListener('click', toggleMusic, { passive: true });
-    musicControl.addEventListener('keydown', function (e) {
-      if (e.key === 'Enter') toggleMusic();
-    }, { passive: true });
-  }
-
   // ===== Floating photos & overlay logic =====
   var movers = [];
   var driftId = null;
@@ -402,3 +373,32 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 });
+// === Lock hero below navbar (dynamic nav height) ===
+(function ensureHeroBelowNav(){
+  var header = document.querySelector('header[role="banner"]');
+  if (!header) return;
+
+  function applyNavHeight(){
+    // pakai getBoundingClientRect untuk akurasi termasuk border
+    var h = Math.ceil(header.getBoundingClientRect().height);
+    // fail-safe untuk kasus extreme
+    if (!h || h < 48) h = 56;
+    document.documentElement.style.setProperty('--nav-h', h + 'px');
+  }
+
+  // initial
+  applyNavHeight();
+
+  // update saat resize / orientation berubah
+  var rafId = null;
+  function schedule(){
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(function(){ rafId = null; applyNavHeight(); });
+  }
+  window.addEventListener('resize', schedule, { passive: true });
+  window.addEventListener('orientationchange', schedule);
+  // jika font web selesai load dan mempengaruhi tinggi nav
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(applyNavHeight).catch(function(){});
+  }
+})();
