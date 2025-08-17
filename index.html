@@ -1,128 +1,315 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>For My Only One, Asti</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>For My Only One, Asti</title>
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap"
+        rel="stylesheet">
 
-  <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <header role="banner">
-    <nav aria-label="Primary">
-      <ul>
-        <li><a class="active-link" href="index.html" aria-current="page">Asti</a></li>
-        <li><a href="gallery.html">Asti with Her Boyfriend</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header role="banner">
+        <nav aria-label="Primary">
+            <ul>
+                <li><a class="active-link" href="index.html" aria-current="page">Asti</a></li>
+                <li><a href="gallery.html">Asti with Her Boyfriend</a></li>
+            </ul>
+        </nav>
+    </header>
 
-  <main id="page-home" class="page active">
-    <section class="hero-section">
-      <div class="hero-content">
-        <h1 class="special-name">Asti Intan Prasuci</h1>
-        <p class="subtitle">"You are not just a star in my sky, you are the entire constellation that guides me home."</p>
+    <main id="page-home" class="page active">
+        <section class="hero-section">
+            <div class="hero-content">
+                <h1 class="special-name">Asti Intan Prasuci</h1>
+                <p class="subtitle">"You are not just a star in my sky, you are the entire constellation that guides me
+                    home."</p>
 
-        <div id="countdown" aria-live="polite">
-          <div class="timer-box"><span id="days">0</span><p>Days</p></div>
-          <div class="timer-box"><span id="hours">0</span><p>Hours</p></div>
-          <div class="timer-box"><span id="minutes">0</span><p>Minutes</p></div>
-          <div class="timer-box"><span id="seconds">0</span><p>Seconds</p></div>
+                <div id="countdown" aria-live="polite">
+                    <div class="timer-box"><span id="days">0</span>
+                        <p>Days</p>
+                    </div>
+                    <div class="timer-box"><span id="hours">0</span>
+                        <p>Hours</p>
+                    </div>
+                    <div class="timer-box"><span id="minutes">0</span>
+                        <p>Minutes</p>
+                    </div>
+                    <div class="timer-box"><span id="seconds">0</span>
+                        <p>Seconds</p>
+                    </div>
+                </div>
+
+                <a href="gallery.html" class="cta-button secondary" rel="noopener">Kunjungi Galeri</a>
+            </div>
+
+            <!-- Sunflower trigger (klik / Enter untuk buka surat) -->
+            <div id="sunflower-container" role="button" aria-label="Buka surat" tabindex="0" onclick="openLetter()"
+                onkeydown="if(event.key==='Enter'){openLetter()}">
+
+                <!-- Sunflower (no-brown palette, full body, responsive) -->
+                <svg class="sunflower realistic" viewBox="0 0 360 600" preserveAspectRatio="xMidYMid meet"
+                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+
+                    <defs>
+                        <!-- Greens -->
+                        <linearGradient id="stemGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#2fb25b" />
+                            <stop offset="100%" stop-color="#128043" />
+                        </linearGradient>
+                        <linearGradient id="leafGrad" x1="0" y1="0" x2="1" y2="1">
+                            <stop offset="0%" stop-color="#39c06c" />
+                            <stop offset="100%" stop-color="#1d8b4d" />
+                        </linearGradient>
+
+                        <!-- Petals (gold/amber, no brown) -->
+                        <linearGradient id="petalOuter" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#FFF387" />
+                            <stop offset="55%" stop-color="#FFC94A" />
+                            <stop offset="100%" stop-color="#F4AC00" />
+                        </linearGradient>
+                        <linearGradient id="petalInner" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#FFF9BE" />
+                            <stop offset="50%" stop-color="#FFD978" />
+                            <stop offset="100%" stop-color="#FFB400" />
+                        </linearGradient>
+
+                        <!-- Center disk (rose tones, no brown) -->
+                        <radialGradient id="centerRose" cx="50%" cy="45%" r="60%">
+                            <stop offset="0%" stop-color="#8a2a4a" />
+                            <stop offset="55%" stop-color="#5a1630" />
+                            <stop offset="100%" stop-color="#2a0b18" />
+                        </radialGradient>
+
+                        <!-- Soft shadows -->
+                        <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+                            <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.25" />
+                        </filter>
+                        <filter id="centerInner" x="-50%" y="-50%" width="200%" height="200%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="b" />
+                            <feOffset dy="1" in="b" result="o" />
+                            <feComposite in="o" in2="SourceAlpha" operator="arithmetic" k2="-1" k3="1" result="i" />
+                            <feColorMatrix in="i" type="matrix" values="0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0 0
+                  0 0 0 0.6 0" />
+                            <feComposite in="SourceGraphic" in2="i" operator="over" />
+                        </filter>
+
+                        <!-- Reusable shapes -->
+                        <symbol id="petal" viewBox="-18 -60 36 120">
+                            <path d="M0,-55 C10,-50 12,-20 0,0 C-12,-20 -10,-50 0,-55Z" fill="url(#petalOuter)" />
+                            <path d="M0,-52 C8,-47 9,-23 0,-2 C-9,-23 -8,-47 0,-52Z" fill="url(#petalInner)"
+                                opacity="0.9" />
+                            <ellipse cx="0" cy="-8" rx="7" ry="5" fill="#f2b200" opacity="0.18" />
+                        </symbol>
+                        <!-- Seeds in soft-gold (no brown) -->
+                        <symbol id="seed" viewBox="-1.2 -1.2 2.4 2.4">
+                            <circle r="1.2" fill="#FFE6A6" />
+                        </symbol>
+                    </defs>
+
+                    <!-- Sway wrapper -->
+                    <g class="sway">
+                        <!-- Long stem -->
+                        <path
+                            d="M180 590 C178 520, 182 450, 180 380 C178 320, 182 240, 180 180 C178 150, 179 130, 180 115"
+                            stroke="url(#stemGrad)" stroke-width="12" fill="none" stroke-linecap="round"
+                            filter="url(#softShadow)" />
+
+                        <!-- Leaves -->
+                        <path d="M182 360 C230 345, 245 300, 205 295 C186 294, 182 320, 182 360Z" fill="url(#leafGrad)"
+                            filter="url(#softShadow)" />
+                        <path d="M178 300 C130 285, 115 245, 150 242 C170 241, 176 265, 178 300Z" fill="url(#leafGrad)"
+                            filter="url(#softShadow)" />
+
+                        <!-- Head -->
+                        <g transform="translate(180,160)">
+                            <!-- Outer petals -->
+                            <g opacity="0.95" filter="url(#softShadow)">
+                                <!-- 24 petals -->
+                                <use href="#petal" transform="rotate(0)   scale(1.1)" />
+                                <use href="#petal" transform="rotate(15)  scale(1.1)" />
+                                <use href="#petal" transform="rotate(30)  scale(1.1)" />
+                                <use href="#petal" transform="rotate(45)  scale(1.1)" />
+                                <use href="#petal" transform="rotate(60)  scale(1.1)" />
+                                <use href="#petal" transform="rotate(75)  scale(1.1)" />
+                                <use href="#petal" transform="rotate(90)  scale(1.1)" />
+                                <use href="#petal" transform="rotate(105) scale(1.1)" />
+                                <use href="#petal" transform="rotate(120) scale(1.1)" />
+                                <use href="#petal" transform="rotate(135) scale(1.1)" />
+                                <use href="#petal" transform="rotate(150) scale(1.1)" />
+                                <use href="#petal" transform="rotate(165) scale(1.1)" />
+                                <use href="#petal" transform="rotate(180) scale(1.1)" />
+                                <use href="#petal" transform="rotate(195) scale(1.1)" />
+                                <use href="#petal" transform="rotate(210) scale(1.1)" />
+                                <use href="#petal" transform="rotate(225) scale(1.1)" />
+                                <use href="#petal" transform="rotate(240) scale(1.1)" />
+                                <use href="#petal" transform="rotate(255) scale(1.1)" />
+                                <use href="#petal" transform="rotate(270) scale(1.1)" />
+                                <use href="#petal" transform="rotate(285) scale(1.1)" />
+                                <use href="#petal" transform="rotate(300) scale(1.1)" />
+                                <use href="#petal" transform="rotate(315) scale(1.1)" />
+                                <use href="#petal" transform="rotate(330) scale(1.1)" />
+                                <use href="#petal" transform="rotate(345) scale(1.1)" />
+                            </g>
+
+                            <!-- Inner petals (offset) -->
+                            <g transform="scale(0.96) translate(0,6)">
+                                <use href="#petal" transform="rotate(7.5)" />
+                                <use href="#petal" transform="rotate(22.5)" />
+                                <use href="#petal" transform="rotate(37.5)" />
+                                <use href="#petal" transform="rotate(52.5)" />
+                                <use href="#petal" transform="rotate(67.5)" />
+                                <use href="#petal" transform="rotate(82.5)" />
+                                <use href="#petal" transform="rotate(97.5)" />
+                                <use href="#petal" transform="rotate(112.5)" />
+                                <use href="#petal" transform="rotate(127.5)" />
+                                <use href="#petal" transform="rotate(142.5)" />
+                                <use href="#petal" transform="rotate(157.5)" />
+                                <use href="#petal" transform="rotate(172.5)" />
+                                <use href="#petal" transform="rotate(187.5)" />
+                                <use href="#petal" transform="rotate(202.5)" />
+                                <use href="#petal" transform="rotate(217.5)" />
+                                <use href="#petal" transform="rotate(232.5)" />
+                                <use href="#petal" transform="rotate(247.5)" />
+                                <use href="#petal" transform="rotate(262.5)" />
+                                <use href="#petal" transform="rotate(277.5)" />
+                                <use href="#petal" transform="rotate(292.5)" />
+                                <use href="#petal" transform="rotate(307.5)" />
+                                <use href="#petal" transform="rotate(322.5)" />
+                                <use href="#petal" transform="rotate(337.5)" />
+                                <use href="#petal" transform="rotate(352.5)" />
+                            </g>
+
+                            <!-- Subtle gold ring (no dark brown ring) -->
+                            <circle r="74" fill="none" stroke="#F4C55F" stroke-opacity="0.35" stroke-width="4" />
+
+                            <!-- Center disk + seeds -->
+                            <g filter="url(#centerInner)">
+                                <circle r="64" fill="url(#centerRose)" />
+                                <g opacity="0.95">
+                                    <!-- r=20 -->
+                                    <g>
+                                        <use href="#seed" transform="rotate(0) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(30) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(60) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(90) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(120) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(150) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(180) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(210) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(240) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(270) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(300) translate(20,0)" />
+                                        <use href="#seed" transform="rotate(330) translate(20,0)" />
+                                    </g>
+                                    <!-- r=34 -->
+                                    <g>
+                                        <use href="#seed" transform="rotate(15) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(45) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(75) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(105) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(135) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(165) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(195) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(225) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(255) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(285) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(315) translate(34,0)" />
+                                        <use href="#seed" transform="rotate(345) translate(34,0)" />
+                                    </g>
+                                    <!-- r=48 -->
+                                    <g>
+                                        <use href="#seed" transform="rotate(0) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(20) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(40) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(60) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(80) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(100) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(120) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(140) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(160) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(180) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(200) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(220) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(240) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(260) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(280) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(300) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(320) translate(48,0)" />
+                                        <use href="#seed" transform="rotate(340) translate(48,0)" />
+                                    </g>
+                                </g>
+                                <!-- gentle highlight -->
+                                <ellipse cx="-12" cy="-14" rx="18" ry="12" fill="#fff" opacity="0.10" />
+                            </g>
+                        </g>
+                    </g>
+                </svg>
+            </div>
+
+
+
+            <!-- Overlay Surat -->
+            <div id="letter-overlay" aria-hidden="true">
+                <button class="close-overlay-button" onclick="closeLetterOverlay()"
+                    aria-label="Tutup overlay">&times;</button>
+                <div class="letter-content" role="dialog" aria-modal="true" aria-label="Surat untukmu">
+                    <h2>Untukmu, My Favorit Girl</h2>
+                    <p>Sayang, terkadang kata-kata terasa tidak cukup untuk menjelaskan betapa bersyukurnya aku atas
+                        kehadiranmu...<br><br>Terima kasih telah menjadi kompas di saat aku tersesat, menjadi jangkar di
+                        tengah badai, dan menjadi rumah untuk hatiku yang lelah. Setiap detik bersamamu adalah
+                        anugerah.<br>
+                        Kalimat-Kalimat yang aku susun sebelumnya di atas itu hanya ucapan mula mula atas apapun yang
+                        telah
+                        kamu berikan kepadaku, sayang</p>
+                    <button class="cta-button" onclick="triggerBirthdaySurprise()">Lanjutkan...</button>
+                </div>
+                <div id="birthday-surprise">
+                    <h1 class="birthday-title">Selamat Ulang Tahun ke-25, Cintaku!</h1>
+                    <p class="birthday-subtitle">Semoga semua mimpimu terwujud.</p>
+                    <div class="birthday-wish">
+                        <p>Di hari yang istimewa ini, aku tidak punya banyak kata selain doa dan harapan terbaik
+                            untukmu.
+                            Semoga
+                            kamu selalu dikelilingi kebahagiaan, diberikan kesehatan, dan dimudahkan dalam setiap
+                            langkahmu
+                            untuk meraih semua yang kamu impikan. Terima kasih telah menjadi cahaya, sumber kekuatan,
+                            dan
+                            alasan
+                            di balik senyumku setiap hari. Aku sangat beruntung memilikimu.</p>
+                    </div>
+                    <button class="cta-button" onclick="window.location.href='gallery.html'">Lihat Kisah Kita</button>
+                </div>
+            </div>
+    </main>
+
+    <!-- Fade to Love overlay -->
+    <div id="love-fade" aria-hidden="true">
+        <div class="love-caption">
+            <p>“Every version of me loves every version of you.”</p>
         </div>
-
-        <a href="gallery.html" class="cta-button secondary" rel="noopener">Kunjungi Galeri</a>
-      </div>
-
-      <!-- Sunflower trigger (klik / Enter untuk buka surat) -->
-      <div id="sunflower-container" role="button" aria-label="Buka surat" tabindex="0" onclick="openLetter()" onkeydown="if(event.key==='Enter'){openLetter()}">
-        <!-- SVG Sunflower -->
-        <svg class="sunflower" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-          <!-- Stem -->
-          <path d="M 100 400 C 100 350, 110 250, 100 150" stroke="#006400" stroke-width="8" fill="none" stroke-linecap="round" />
-          <!-- Leaves -->
-          <path d="M104 300 C 150 280, 140 220, 104 240" fill="#2E8B57" />
-          <path d="M96 250 C 50 230, 60 170, 96 190" fill="#3CB371" />
-          <!-- Head -->
-          <g class="sunflower-head">
-            <g class="petals-back">
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(22.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(67.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(112.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(157.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(202.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(247.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(292.5 100 100)" />
-              <path d="M100 20 L120 80 L100 100 Z" fill="#FFC300" transform="rotate(337.5 100 100)" />
-            </g>
-            <g class="petals-front">
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(0 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(45 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(90 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(135 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(180 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(225 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(270 100 100)" />
-              <path d="M100 30 L120 85 L100 105 Z" fill="#FFD700" transform="rotate(315 100 100)" />
-            </g>
-            <circle cx="100" cy="100" r="30" fill="#8B4513" />
-            <circle cx="100" cy="100" r="20" fill="#6B3A0E" />
-          </g>
-        </svg>
-      </div>
-    </section>
-
-    <!-- Overlay Surat -->
-    <div id="letter-overlay" aria-hidden="true">
-      <button class="close-overlay-button" onclick="closeLetterOverlay()" aria-label="Tutup overlay">&times;</button>
-      <div class="letter-content" role="dialog" aria-modal="true" aria-label="Surat untukmu">
-        <h2>Untukmu, My Favorit Girl</h2>
-        <p>Sayang, terkadang kata-kata terasa tidak cukup untuk menjelaskan betapa bersyukurnya aku atas kehadiranmu...<br><br>Terima kasih telah menjadi kompas di saat aku tersesat, menjadi jangkar di tengah badai, dan menjadi rumah untuk hatiku yang lelah. Setiap detik bersamamu adalah anugerah.<br>
-        Kalimat-Kalimat yang aku susun sebelumnya di atas itu hanya ucapan mula mula atas apapun yang telah kamu berikan kepadaku, sayang</p>
-        <button class="cta-button" onclick="triggerBirthdaySurprise()">Lanjutkan...</button>
-      </div>
-      <div id="birthday-surprise">
-        <h1 class="birthday-title">Selamat Ulang Tahun ke-25, Cintaku!</h1>
-        <p class="birthday-subtitle">Semoga semua mimpimu terwujud.</p>
-        <div class="birthday-wish">
-          <p>Di hari yang istimewa ini, aku tidak punya banyak kata selain doa dan harapan terbaik untukmu. Semoga
-            kamu selalu dikelilingi kebahagiaan, diberikan kesehatan, dan dimudahkan dalam setiap langkahmu
-            untuk meraih semua yang kamu impikan. Terima kasih telah menjadi cahaya, sumber kekuatan, dan alasan
-            di balik senyumku setiap hari. Aku sangat beruntung memilikimu.</p>
-        </div>
-        <button class="cta-button" onclick="window.location.href='gallery.html'">Lihat Kisah Kita</button>
-      </div>
     </div>
-  </main>
 
-  <!-- Music Player (start setelah user gesture) -->
-  <audio id="background-music" preload="none" loop playsinline>
-    <source src="https://github.com/samuelgoddard/blog/raw/master/babimyrs.mp3" type="audio/mpeg">
-  </audio>
-  <div id="music-control" aria-label="Kontrol musik" role="button" tabindex="0">
-    <svg id="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-    <svg id="pause-icon" viewBox="0 0 24 24" style="display:none" aria-hidden="true"><path d="M6 5h4v14H6zm8 0h4v14h-4z"/></svg>
-  </div>
+    <!-- (opsional) Preload gambar -->
+    <div id="preload-images" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;"></div>
 
-  <!-- Fade to Love overlay -->
-  <div id="love-fade" aria-hidden="true">
-    <div class="love-caption">
-      <p>“Every version of me loves every version of you.”</p>
-    </div>
-  </div>
+    <noscript>
+        <p style="color:white;text-align:center;padding:1rem">Javascript nonaktif. Beberapa interaksi mungkin tidak
+            berfungsi.</p>
+    </noscript>
 
-  <!-- (opsional) Preload gambar -->
-  <div id="preload-images" aria-hidden="true" style="position:absolute;width:0;height:0;overflow:hidden;"></div>
-
-  <noscript>
-    <p style="color:white;text-align:center;padding:1rem">Javascript nonaktif. Beberapa interaksi mungkin tidak berfungsi.</p>
-  </noscript>
-
-  <script src="Script.Js" defer></script>
+    <script src="Script.Js" defer></script>
 </body>
+
 </html>
