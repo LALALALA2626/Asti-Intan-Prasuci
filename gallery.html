@@ -2,71 +2,65 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Our Story — Gallery</title>
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="style.css?v=11">
+  <link rel="stylesheet" href="style.css?v=12">
 </head>
 <body id="gallery-page-body">
-  <!-- Sky layer (twinkle + shooting stars + hearts live here) -->
+  <!-- Background layers -->
   <div id="sky" aria-hidden="true"></div>
+  <canvas id="particle-canvas" aria-hidden="true"></canvas>
 
-  <!-- Soft ambience particles -->
-  <canvas id="particle-canvas"></canvas>
-
-  <!-- NAV -->
-  <header>
-    <nav>
+  <header role="banner">
+    <nav aria-label="Primary">
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a class="active-link" href="gallery.html">Gallery</a></li>
+        <li><a class="active-link" href="gallery.html" aria-current="page">Gallery</a></li>
       </ul>
     </nav>
   </header>
 
-  <!-- Intro -->
   <div class="gallery-intro">
     <h1>All About Asti Intan Prasuci</h1>
     <p>Setiap gambar adalah bab dari cerita kita yang tak ternilai.</p>
   </div>
 
-
-  <!-- PROLOGUE — styled glass card -->
-<section id="prologue" class="prologue">
-  <div class="prologue-ornament" aria-hidden="true"></div>
-  <div class="prologue-container">
-
-    <div class="prologue-body">
-      <p>Halo Sayang, aku ingin menceritakan sedikit pengalaman aku bertemu kamu di sini hehe, aku masih ingat betul bagaimana kita pertama kali bertemu di sekretariat HMAK.</p>
-      <p>Dulu tahun 2022 aku benar-benar malu buat kenalan sama kamu. Dalam pikiranku, ah kamu tinggi banget—HAHAHA.</p>
-      <p>Pas aku jadi Ketua Fraksi, akhirnya bisa komunikasi lebih gamblang (walau masih dalam ranah organisasi). Aku tetap malu, apalagi pas gmeet kamu sudah masuk tapi yang lain belum—awkward banget HAHA.</p>
-      <blockquote class="prologue-quote">“Yang pelan tak selalu tertinggal; kadang justru paling mengerti arah.”</blockquote>
-      <p>Aku mikir, “Yaudah deh, yang penting bisa kenal di ranah organisasi—toh masih bisa beli sari roti.” Terus saat wisuda aku sempat mikir, kok pada nggak datang ya... ya sudahlah.</p>
-      <p>Sampai akhirnya dicomblangin dan kita menjalin hubungan. Aku nggak nyangka kalau cerita begini bikin aku senyum sendiri.</p>
-      <p>Sekarang aku bisa bilang: kamu orang paling berharga dalam hidupku. Kamu alasan aku tersenyum tiap hari, dan aku bersyukur bisa mengenalmu.</p>
-      <p>Terima kasih sudah jadi bagian dari hidupku, sayang. Aku akan selalu mencintaimu dan menjaga hubungan kita. Selalu berusaha bikin kamu tersenyum.</p>
-      <p>Selamat ulang tahun ya sayang. Semoga selalu bahagia dan sehat. Aku akan selalu ada untukmu, menemanimu di setiap langkah.</p>
-      <p>Love you so much, Asti Intan Prasuci.</p>
-    </div>
-
-    <footer class="prologue-footer">
-      <div class="prologue-meta">
-        <span class="dot"></span> Ditulis dengan rasa, dibaca dengan senyum.
+  <!-- PROLOGUE -->
+  <section id="prologue" class="prologue">
+    <div class="prologue-ornament" aria-hidden="true"></div>
+    <div class="prologue-container">
+      <div class="prologue-body">
+        <p>Halo Sayang, aku ingin menceritakan sedikit pengalaman aku bertemu kamu di sini hehe, aku masih ingat betul bagaimana kita pertama kali bertemu di sekretariat HMAK.</p>
+        <p>Dulu tahun 2022 aku benar-benar malu buat kenalan sama kamu. Dalam pikiranku, ah kamu tinggi banget—HAHAHA.</p>
+        <p>Pas aku jadi Ketua Fraksi, akhirnya bisa komunikasi lebih gamblang (walau masih dalam ranah organisasi). Aku tetap malu, apalagi pas gmeet kamu sudah masuk tapi yang lain belum—awkward banget HAHA.</p>
+        <blockquote class="prologue-quote">“Yang pelan tak selalu tertinggal; kadang justru paling mengerti arah.”</blockquote>
+        <p>Aku mikir, “Yaudah deh, yang penting bisa kenal di ranah organisasi—toh masih bisa beli sari roti.” Terus saat wisuda aku sempat mikir, kok pada nggak datang ya... ya sudahlah.</p>
+        <p>Sampai akhirnya dicomblangin dan kita menjalin hubungan. Aku nggak nyangka kalau cerita begini bikin aku senyum sendiri.</p>
+        <p>Sekarang aku bisa bilang: kamu orang paling berharga dalam hidupku. Kamu alasan aku tersenyum tiap hari, dan aku bersyukur bisa mengenalmu.</p>
+        <p>Terima kasih sudah jadi bagian dari hidupku, sayang. Aku akan selalu mencintaimu dan menjaga hubungan kita. Selalu berusaha bikin kamu tersenyum.</p>
+        <p>Selamat ulang tahun ya sayang. Semoga selalu bahagia dan sehat. Aku akan selalu ada untukmu, menemanimu di setiap langkah.</p>
+        <p>Love you so much, Asti Intan Prasuci.</p>
       </div>
-    </footer>
-  </div>
-</section>
+
+      <footer class="prologue-footer">
+        <div class="prologue-meta">
+          <span class="dot"></span> Ditulis dengan rasa, dibaca dengan senyum.
+        </div>
+      </footer>
+    </div>
+  </section>
 
   <!-- GALLERY CARDS -->
   <main class="gallery-container">
     <div class="gallery-card">
-      <div class="card-image"><img src="./Assets/gallery/SIU.jpg" alt="Momen 1"></div>
+      <div class="card-image"><img src="./Assets/gallery/SIU.jpg" alt="Momen 1" loading="lazy" decoding="async"></div>
       <div class="card-content">
         <h2 class="card-title">ASTI</h2>
         <p class="card-date">2024</p>
@@ -75,7 +69,7 @@
     </div>
 
     <div class="gallery-card">
-      <div class="card-image"><img src="./Assets/gallery/SIUU.jpg" alt="Momen 2"></div>
+      <div class="card-image"><img src="./Assets/gallery/SIUU.jpg" alt="Momen 2" loading="lazy" decoding="async"></div>
       <div class="card-content">
         <h2 class="card-title">Felixander</h2>
         <p class="card-date">10 Juni 2025</p>
@@ -84,7 +78,7 @@
     </div>
 
     <div class="gallery-card">
-      <div class="card-image"><img src="./Assets/gallery/SIUUUU.jpg" alt="Momen 3"></div>
+      <div class="card-image"><img src="./Assets/gallery/SIUUUU.jpg" alt="Momen 3" loading="lazy" decoding="async"></div>
       <div class="card-content">
         <h2 class="card-title">Ultah Felix</h2>
         <p class="card-date">26 Juni 2025</p>
@@ -93,7 +87,7 @@
     </div>
 
     <div class="gallery-card">
-      <div class="card-image"><img src="./Assets/gallery/SIUUU.jpg" alt="Momen 4"></div>
+      <div class="card-image"><img src="./Assets/gallery/SIUUU.jpg" alt="Momen 4" loading="lazy" decoding="async"></div>
       <div class="card-content">
         <h2 class="card-title">Semua Tentang Kita</h2>
         <p class="card-date">16 Agustus 2025</p>
@@ -102,18 +96,16 @@
     </div>
   </main>
 
-  <!-- Romantic micro-copy -->
   <div id="love-whisper" class="love-whisper" aria-live="polite"></div>
 
-  <!-- Audio (opsional, follow Script.Js engine) -->
+  <!-- (opsional) YT API & audio fallback -->
   <div id="yt-audio" data-video-id="REPLACE_WITH_VIDEO_ID" aria-hidden="true"></div>
-  <script src="https://www.youtube.com/iframe_api"></script>
-  <audio id="background-music" preload="none" loop>
+  <script src="https://www.youtube.com/iframe_api" async></script>
+  <audio id="background-music" preload="none" loop playsinline>
     <source src="./Assets/audio/fallback.mp3" type="audio/mpeg">
   </audio>
 
-  <!-- Scripts -->
-  <script src="gallery.js?v=11"></script>
-  <script src="Script.Js?v=11"></script>
+  <script src="gallery.js?v=12" defer></script>
+  <script src="Script.Js?v=12" defer></script>
 </body>
 </html>
