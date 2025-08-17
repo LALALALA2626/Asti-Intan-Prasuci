@@ -1060,3 +1060,26 @@ header,
         scroll-behavior: auto !important;
     }
 }
+/* === Gallery image pan on page scroll (append-only) === */
+.gallery-card .card-image {
+  position: relative;
+  overflow: hidden;               /* sembunyikan bagian gambar yang dipan */
+}
+
+.gallery-card .card-image img {
+  width: 100%;
+  height: 120%;                   /* beri headroom vertikal untuk dipan */
+  object-fit: cover;
+  object-position: center top;
+  will-change: transform;
+  transform: translate3d(0, var(--imgShift, 0), 0); /* di-drive oleh JS */
+}
+/* === Mobile fix: non-sticky flow to avoid overlap === */
+@media (max-width: 900px) {
+  .gallery-card {
+    position: static;     /* override posisi sticky */
+    top: auto;            /* abaikan offset top */
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
