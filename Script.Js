@@ -1,312 +1,404 @@
-document.addEventListener('DOMContentLoaded', () => {
-    // ===== Fade-to-Love controller =====
-    window.fadeToLove = function(opts = {}) {
-        const {
-            image = './Assets/gallery/fade-love.jpg',
-            duration = 1200,
-            hold = 1600,
-            next = 'letter'
-        } = opts;
+// Cross-browser behavior for home page: countdown, overlay letter, music control, floating photos, love-fade
+document.addEventListener('DOMContentLoaded', function () {
+  // ===== Config (biarkan sesuai kebutuhanmu) =====
+  var anniversaryDate = new Date('Aug 16, 2025 00:00:00').getTime();
 
-        const node = document.getElementById('love-fade');
-        if (!node) {
-            console.warn('#love-fade not found');
-            return;
-        };
+  // Foto melayang saat overlay surat dibuka
+  var floatingPhotoUrls = [
+    './Assets/gallery/IMG-20250707-WA0022.jpg',
+    './Assets/gallery/IMG-20250707-WA0023.jpg',
+    './Assets/gallery/IMG-20250707-WA0025.jpg',
+    './Assets/gallery/IMG-20250707-WA0026.jpg',
+    './Assets/gallery/IMG-20250707-WA0027.jpg',
+    './Assets/gallery/IMG-20250707-WA0028.jpg',
+    './Assets/gallery/IMG-20250707-WA0029.jpg',
+    './Assets/gallery/IMG-20250707-WA0030.jpg',
+    './Assets/gallery/IMG-20250707-WA0031.jpg',
+    './Assets/gallery/IMG-20250707-WA0038.jpg',
+    './Assets/gallery/IMG-20250707-WA0041.jpg',
+    './Assets/gallery/CANTIK.jpg',
+    './Assets/gallery/1.jpg',
+    './Assets/gallery/12.jpg',
+    './Assets/gallery/IMG-20250707-WA0061.jpg'
+  ];
 
-        // fade-in
-        node.style.setProperty('--love-bg', `url('${image}')`);
-        node.classList.add('show');
-        setTimeout(() => {
-            node.classList.add('hold');
-        }, duration);
+  var prefersReduced = false;
+  try {
+    prefersReduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  } catch (_) {}
 
-        // fade-out
-        setTimeout(() => {
-            node.classList.remove('hold');
-            node.classList.add('hide');
-            setTimeout(() => {
-                node.classList.remove('show', 'hide');
-                node.style.removeProperty('--love-bg');
-                if (next === 'letter') openLetter();
-                else if (next === 'gallery') window.location.href = 'gallery.html';
-            }, 700);
-        }, duration + hold);
+  // ===== Element refs =====
+  var letterOverlay = document.getElementById('letter-overlay');
+  var letterContent = letterOverlay ? letterOverlay.querySelector('.letter-content') : null;
+  var birthdaySurprise = document.getElementById('birthday-surprise');
+  var music = document.getElementById('background-music');
+  var musicControl = document.getElementById('music-control');
+  var playIcon = document.getElementById('play-icon');
+  var pauseIcon = document.getElementById('pause-icon');
+  var sunflowerContainer = document.getElementById('sunflower-container');
+  var loveFade = document.getElementById('love-fade');
+
+  // ===== Countdown (aman untuk semua timezone; jika lewat, tampilkan pesan) =====
+  function updateCountdown() {
+    var now = Date.now();
+    var distance = anniversaryDate - now;
+
+    var dEl = document.getElementById('days');
+    var hEl = document.getElementById('hours');
+    var mEl = document.getElementById('minutes');
+    var sEl = document.getElementById('seconds');
+
+    if (distance > 0) {
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      if (dEl) dEl.textContent = String(days);
+      if (hEl) hEl.textContent = String(hours);
+      if (mEl) mEl.textContent = String(minutes);
+      if (sEl) sEl.textContent = String(seconds);
+    } else {
+      var ctn = document.getElementById('countdown');
+      if (ctn) ctn.innerHTML = '<p>Waktu telah tiba! Selamat merayakan!</p>';
+      clearInterval(countdownInterval);
+    }
+  }
+  var countdownInterval = setInterval(updateCountdown, 1000);
+  updateCountdown();
+
+  // ===== Music control (berjalan hanya setelah user gesture; kompatibel iOS) =====
+  var isMusicPlaying = false;
+  function toggleMusic() {
+    if (!music) return;
+    if (!isMusicPlaying) {
+      var p = music.play();
+      if (p && typeof p.then === 'function') {
+        p.then(function () {
+          isMusicPlaying = true;
+          if (playIcon) playIcon.style.display = 'none';
+          if (pauseIcon) pauseIcon.style.display = 'block';
+        }).catch(function () {
+          // Autoplay diblokir — tunggu gesture berikutnya
+        });
+      }
+    } else {
+      music.pause();
+      isMusicPlaying = false;
+      if (playIcon) playIcon.style.display = 'block';
+      if (pauseIcon) pauseIcon.style.display = 'none';
+    }
+  }
+  if (musicControl) {
+    musicControl.addEventListener('click', toggleMusic, { passive: true });
+    musicControl.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter') toggleMusic();
+    }, { passive: true });
+  }
+
+  // ===== Floating photos & overlay logic =====
+  var movers = [];
+  var driftId = null;
+  var isOverlayOpening = false;
+
+  function addDrag(el, state) {
+    function startDrag(e) {
+      var p = e.touches && e.touches.length ? e.touches[0] : e;
+      state.dragging = true;
+      state.lastMouse = { x: p.clientX, y: p.clientY };
+      try { el.style.transition = 'none'; } catch (_) {}
+      e.preventDefault();
+    }
+    function duringDrag(e) {
+      if (!state.dragging) return;
+      var p = e.touches && e.touches.length ? e.touches[0] : e;
+      var dx = p.clientX - state.lastMouse.x;
+      var dy = p.clientY - state.lastMouse.y;
+      state.x += dx; state.y += dy;
+      state.lastMouse = { x: p.clientX, y: p.clientY };
+      el.style.left = state.x + 'px';
+      el.style.top = state.y + 'px';
+      e.preventDefault();
+    }
+    function endDrag() {
+      if (state.dragging) {
+        state.vx = (Math.random() * 0.4 - 0.2) + (Math.random() * 0.3);
+        state.vy = (Math.random() * 0.4 - 0.2) + (Math.random() * 0.3);
+      }
+      state.dragging = false;
+      state.lastMouse = null;
+      try { el.style.transition = ''; } catch (_) {}
     }
 
-    // --- PENTING: Kustomisasi di sini ---
-    const anniversaryDate = new Date("Aug 16, 2025 00:00:00").getTime();
+    el.addEventListener('mousedown', startDrag);
+    window.addEventListener('mousemove', duringDrag, { passive: false });
+    window.addEventListener('mouseup', endDrag);
 
-    // ✅ DISINKRONKAN dengan semua nama file gambar kamu
-    const floatingPhotoUrls = [
-        "./Assets/gallery/IMG-20250707-WA0022.jpg",
-        "./Assets/gallery/IMG-20250707-WA0023.jpg",
-        "./Assets/gallery/IMG-20250707-WA0025.jpg",
-        "./Assets/gallery/IMG-20250707-WA0026.jpg",
-        "./Assets/gallery/IMG-20250707-WA0027.jpg",
-        "./Assets/gallery/IMG-20250707-WA0028.jpg",
-        "./Assets/gallery/IMG-20250707-WA0029.jpg",
-        "./Assets/gallery/IMG-20250707-WA0030.jpg",
-        "./Assets/gallery/IMG-20250707-WA0031.jpg",
-        "./Assets/gallery/IMG-20250707-WA0038.jpg",
-        "./Assets/gallery/IMG-20250707-WA0041.jpg",
-        "./Assets/gallery/CANTIK.jpg",
-        "./Assets/gallery/1.jpg",
-        "./Assets/gallery/12.jpg",
-        "./Assets/gallery/IMG-20250707-WA0061.jpg"
-    ];
+    el.addEventListener('touchstart', startDrag, { passive: false });
+    window.addEventListener('touchmove', duringDrag, { passive: false });
+    window.addEventListener('touchend', endDrag);
 
-    const letterOverlay = document.getElementById('letter-overlay');
-    const letterContent = document.querySelector('.letter-content');
-    const birthdaySurprise = document.getElementById('birthday-surprise');
-    const music = document.getElementById('background-music');
-    const musicControl = document.getElementById('music-control');
-    const playIcon = document.getElementById('play-icon');
-    const pauseIcon = document.getElementById('pause-icon');
-    const sunflowerContainer = document.getElementById('sunflower-container');
-    let isMusicPlaying = false;
-    let isOverlayOpening = false;
-
-    // Musik toggle
-    musicControl.addEventListener('click', () => {
-        if (!isMusicPlaying) {
-            music.play().then(() => {
-                isMusicPlaying = true;
-                playIcon.style.display = 'none';
-                pauseIcon.style.display = 'block';
-            }).catch((e)=>console.warn('Autoplay diblokir, perlu interaksi.', e));
-        } else {
-            music.pause();
-            isMusicPlaying = false;
-            playIcon.style.display = 'block';
-            pauseIcon.style.display = 'none';
-        }
-    });
-
-    // Countdown
-    function updateCountdown() {
-        const now = new Date().getTime();
-        const distance = anniversaryDate - now;
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-        document.getElementById("days").textContent = Math.max(0, days);
-        document.getElementById("hours").textContent = Math.max(0, hours);
-        document.getElementById("minutes").textContent = Math.max(0, minutes);
-        document.getElementById("seconds").textContent = Math.max(0, seconds);
-
-        if (distance < 0) {
-            document.getElementById("countdown").innerHTML = "<p>Waktu telah tiba! Selamat merayakan!</p>";
-            clearInterval(countdownInterval);
-        }
-    }
-    const countdownInterval = setInterval(updateCountdown, 1000);
-    updateCountdown();
-
-    // Open letter overlay dengan anim + foto mengambang
-    window.openLetter = function () {
-        if (isOverlayOpening) return;
-        isOverlayOpening = true;
-
-        sunflowerContainer.classList.add('blooming');
-
-        setTimeout(() => {
-            document.body.classList.add('no-scroll');
-            if (!isMusicPlaying) {
-                music.play().then(() => {
-                    isMusicPlaying = true;
-                    playIcon.style.display = 'none';
-                    pauseIcon.style.display = 'block';
-                }).catch(e => console.error("Autoplay musik gagal, interaksi pengguna diperlukan.", e));
-            }
-            letterContent.classList.remove('hidden');
-            birthdaySurprise.classList.remove('visible');
-
-            const oldElements = letterOverlay.querySelectorAll('.floating-photo, .sakura-petal');
-            oldElements.forEach(el => el.remove());
-
-            letterOverlay.classList.add('visible');
-
-            const movers = [];
-            const MAX_TRY = 100;
-            letterOverlay.style.setProperty('--photo-count', floatingPhotoUrls.length);
-
-            function avoidLetterArea(x, y, size) {
-                const rect = document.querySelector('.letter-content').getBoundingClientRect();
-                const pad = 12;
-                const overlaps = !(x + size / 2 < rect.left - pad ||
-                                   x - size / 2 > rect.right + pad ||
-                                   y + size / 2 < rect.top - pad ||
-                                   y - size / 2 > rect.bottom + pad);
-                return overlaps;
-            }
-
-            function randomStart(size) {
-                let x, y, t = 0;
-                do {
-                    x = Math.random() * window.innerWidth;
-                    y = Math.random() * window.innerHeight;
-                    t++;
-                } while (avoidLetterArea(x, y, size) && t < MAX_TRY);
-                return { x, y };
-            }
-
-            floatingPhotoUrls.forEach((url, i) => {
-                const img = document.createElement('img');
-                img.src = url;
-                img.className = 'floating-photo';
-                letterOverlay.insertBefore(img, letterOverlay.firstChild);
-
-                const size = Math.floor(180 + Math.random() * 100);
-                const rot = Math.random() * 40 - 20;
-                img.style.setProperty('--size', size + 'px');
-                img.style.setProperty('--base-rot', rot + 'deg');
-                img.style.animationDelay = (Math.random() * 1.2) + 's';
-
-                const start = randomStart(size);
-                setTimeout(() => {
-                    img.style.top = `${start.y}px`;
-                    img.style.left = `${start.x}px`;
-                    img.style.transform = `translate(-50%,-50%) scale(1) rotate(${rot}deg)`;
-                    img.style.opacity = '1';
-                }, 60 * i);
-
-                const speed = 0.25 + Math.random() * 0.5;
-                const ang = Math.random() * Math.PI * 2;
-                const vx = Math.cos(ang) * speed;
-                const vy = Math.sin(ang) * speed;
-                const state = { el: img, x: start.x, y: start.y, vx, vy, size, dragging: false, lastMouse: null };
-                movers.push(state);
-
-                const startDrag = (e) => {
-                    e.preventDefault();
-                    const p = ('touches' in e) ? e.touches[0] : e;
-                    state.dragging = true;
-                    state.lastMouse = { x: p.clientX, y: p.clientY };
-                    img.style.transition = 'none';
-                };
-                const duringDrag = (e) => {
-                    if (!state.dragging) return;
-                    const p = ('touches' in e) ? e.touches[0] : e;
-                    const dx = p.clientX - state.lastMouse.x;
-                    const dy = p.clientY - state.lastMouse.y;
-                    state.x += dx; state.y += dy;
-                    state.lastMouse = { x: p.clientX, y: p.clientY };
-                    state.el.style.left = state.x + 'px';
-                    state.el.style.top = state.y + 'px';
-                };
-                const endDrag = () => {
-                    if (state.dragging && state.lastMouse) {
-                        state.vx = (Math.random() * 0.4 - 0.2) + (Math.random() * 0.3);
-                        state.vy = (Math.random() * 0.4 - 0.2) + (Math.random() * 0.3);
-                    }
-                    state.dragging = false;
-                    state.lastMouse = null;
-                    img.style.transition = '';
-                };
-
-                img.addEventListener('mousedown', startDrag);
-                window.addEventListener('mousemove', duringDrag);
-                window.addEventListener('mouseup', endDrag);
-                img.addEventListener('touchstart', startDrag, { passive: false });
-                window.addEventListener('touchmove', duringDrag, { passive: false });
-                window.addEventListener('touchend', endDrag);
-            });
-
-            function drift() {
-                const raf = () => {
-                    const id = requestAnimationFrame(raf);
-                    drift._id = id;
-                    const W = window.innerWidth, H = window.innerHeight;
-                    const letterRect = document.querySelector('.letter-content').getBoundingClientRect();
-
-                    movers.forEach(m => {
-                        if (m.dragging) return;
-                        const jit = 0.02;
-                        m.vx += (Math.random() - 0.5) * jit;
-                        m.vy += (Math.random() - 0.5) * jit;
-                        const max = 0.9;
-                        m.vx = Math.max(Math.min(m.vx, max), -max);
-                        m.vy = Math.max(Math.min(m.vy, max), -max);
-                        m.x += m.vx; m.y += m.vy;
-
-                        if (m.x - m.size / 2 < 0) { m.x = m.size / 2; m.vx *= -1; }
-                        if (m.x + m.size / 2 > W) { m.x = W - m.size / 2; m.vx *= -1; }
-                        if (m.y - m.size / 2 < 0) { m.y = m.size / 2; m.vy *= -1; }
-                        if (m.y + m.size / 2 > H) { m.y = H - m.size / 2; m.vy *= -1; }
-
-                        const overlaps = !(m.x + m.size / 2 < letterRect.left ||
-                                           m.x - m.size / 2 > letterRect.right ||
-                                           m.y + m.size / 2 < letterRect.top ||
-                                           m.y - m.size / 2 > letterRect.bottom);
-                        if (overlaps) {
-                            const cx = (letterRect.left + letterRect.right) / 2;
-                            const cy = (letterRect.top + letterRect.bottom) / 2;
-                            const dx = m.x - cx, dy = m.y - cy;
-                            const len = Math.max(1, Math.hypot(dx, dy));
-                            m.vx = (dx / len) * 0.8;
-                            m.vy = (dy / len) * 0.8;
-                            m.x += m.vx * 4;
-                            m.y += m.vy * 4;
-                        }
-
-                        m.el.style.left = m.x + 'px';
-                        m.el.style.top = m.y + 'px';
-                    });
-                };
-                raf();
-                drift.stop = () => cancelAnimationFrame(drift._id);
-            }
-            drift();
-
-            window.addEventListener('resize', () => {
-                const W = window.innerWidth, H = window.innerHeight;
-                movers.forEach(m => {
-                    m.x = Math.min(Math.max(m.x, m.size / 2), W - m.size / 2);
-                    m.y = Math.min(Math.max(m.y, m.size / 2), H - m.size / 2);
-                });
-            });
-
-            // Sakura
-            for (let i = 0; i < 50; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'sakura-petal';
-                petal.innerHTML = '🌸';
-                petal.style.left = `${Math.random() * 100}vw`;
-                petal.style.animationDuration = `${Math.random() * 3 + 5}s`;
-                petal.style.animationDelay = `${Math.random() * 5}s`;
-                petal.style.fontSize = `${Math.random() * 10 + 10}px`;
-                letterOverlay.insertBefore(petal, letterOverlay.firstChild);
-            }
-        }, 600);
+    state.cleanup = function () {
+      el.removeEventListener('mousedown', startDrag);
+      window.removeEventListener('mousemove', duringDrag);
+      window.removeEventListener('mouseup', endDrag);
+      el.removeEventListener('touchstart', startDrag);
+      window.removeEventListener('touchmove', duringDrag);
+      window.removeEventListener('touchend', endDrag);
     };
+  }
 
-    window.triggerBirthdaySurprise = function () {
-        letterContent.classList.add('hidden');
-        birthdaySurprise.classList.add('visible');
+  function avoidLetterArea(x, y, size) {
+    if (!letterContent) return false;
+    var rect = letterContent.getBoundingClientRect();
+    var pad = 12;
+    var overlaps = !(x + size / 2 < rect.left - pad ||
+                     x - size / 2 > rect.right + pad ||
+                     y + size / 2 < rect.top - pad ||
+                     y - size / 2 > rect.bottom + pad);
+    return overlaps;
+  }
 
-        const colors = ['#800000', '#ffb3b3', '#ffffff', '#ffdada', '#E8D5C4'];
-        birthdaySurprise.querySelectorAll('.confetti').forEach(c => c.remove());
+  function randomStart(size) {
+    var x, y, t = 0;
+    var MAX_TRY = 120;
+    do {
+      x = Math.random() * window.innerWidth;
+      y = Math.random() * window.innerHeight;
+      t++;
+      if (t > MAX_TRY) break; // fail-safe
+    } while (avoidLetterArea(x, y, size));
+    return { x: x, y: y };
+  }
 
-        for (let i = 0; i < 200; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti';
-            confetti.style.left = `${Math.random() * 100}vw`;
-            confetti.style.top = `${-20 + Math.random() * 20}px`;
-            confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            confetti.style.transform = `scale(${Math.random() + 0.5}) rotate(${Math.random() * 360}deg)`;
-            confetti.style.animationDelay = `${Math.random() * 0.2}s`;
-            birthdaySurprise.appendChild(confetti);
-            setTimeout(() => { confetti.remove(); }, 4000);
+  function startDrift() {
+    if (prefersReduced) return; // hormati preferensi user
+    function raf() {
+      driftId = window.requestAnimationFrame(raf);
+      var W = window.innerWidth, H = window.innerHeight;
+      var letterRect = letterContent ? letterContent.getBoundingClientRect() : null;
+
+      for (var i = 0; i < movers.length; i++) {
+        var m = movers[i];
+        if (m.dragging) continue;
+
+        var jit = 0.02;
+        m.vx += (Math.random() - 0.5) * jit;
+        m.vy += (Math.random() - 0.5) * jit;
+
+        var max = 0.9;
+        m.vx = Math.max(Math.min(m.vx, max), -max);
+        m.vy = Math.max(Math.min(m.vy, max), -max);
+
+        m.x += m.vx; m.y += m.vy;
+
+        if (m.x - m.size / 2 < 0) { m.x = m.size / 2; m.vx *= -1; }
+        if (m.x + m.size / 2 > W) { m.x = W - m.size / 2; m.vx *= -1; }
+        if (m.y - m.size / 2 < 0) { m.y = m.size / 2; m.vy *= -1; }
+        if (m.y + m.size / 2 > H) { m.y = H - m.size / 2; m.vy *= -1; }
+
+        if (letterRect) {
+          var overlaps = !(m.x + m.size / 2 < letterRect.left ||
+                           m.x - m.size / 2 > letterRect.right ||
+                           m.y + m.size / 2 < letterRect.top ||
+                           m.y - m.size / 2 > letterRect.bottom);
+          if (overlaps) {
+            var cx = (letterRect.left + letterRect.right) / 2;
+            var cy = (letterRect.top + letterRect.bottom) / 2;
+            var dx = m.x - cx, dy = m.y - cy;
+            var len = Math.max(1, Math.sqrt(dx * dx + dy * dy));
+            m.vx = (dx / len) * 0.8;
+            m.vy = (dy / len) * 0.8;
+            m.x += m.vx * 4; m.y += m.vy * 4;
+          }
         }
+
+        m.el.style.left = m.x + 'px';
+        m.el.style.top = m.y + 'px';
+      }
+    }
+    raf();
+  }
+
+  // ===== Public APIs (dipakai di HTML) =====
+  window.openLetter = function () {
+    if (isOverlayOpening || !letterOverlay) return;
+    isOverlayOpening = true;
+
+    if (sunflowerContainer) sunflowerContainer.classList.add('blooming');
+
+    setTimeout(function () {
+      document.body.classList.add('no-scroll');
+
+      // coba play musik (akan berhasil hanya setelah gesture sebelumnya)
+      if (music && !isMusicPlaying) {
+        var p = music.play();
+        if (p && typeof p.then === 'function') {
+          p.then(function () {
+            isMusicPlaying = true;
+            if (playIcon) playIcon.style.display = 'none';
+            if (pauseIcon) pauseIcon.style.display = 'block';
+          }).catch(function () {});
+        }
+      }
+
+      if (letterContent) letterContent.classList.remove('hidden');
+      if (birthdaySurprise) birthdaySurprise.classList.remove('visible');
+
+      // bersihkan elemen lama (jika ada)
+      var old = letterOverlay.querySelectorAll('.floating-photo, .sakura-petal');
+      for (var i = 0; i < old.length; i++) old[i].remove();
+
+      letterOverlay.classList.add('visible');
+      movers = [];
+
+      // create floating photos
+      for (var j = 0; j < floatingPhotoUrls.length; j++) {
+        var url = floatingPhotoUrls[j];
+        var img = document.createElement('img');
+        img.src = url;
+        img.alt = 'Moment photo';
+        img.className = 'floating-photo';
+        // sisipkan di paling belakang supaya caption overlay tetap di atas
+        letterOverlay.insertBefore(img, letterOverlay.firstChild);
+
+        var size = Math.floor(180 + Math.random() * 100);
+        var rot = Math.random() * 40 - 20;
+        img.style.setProperty('--size', size + 'px');
+        img.style.setProperty('--base-rot', rot + 'deg');
+        img.style.animationDelay = (Math.random() * 1.2) + 's';
+
+        (function (imgRef, sizeRef, rotRef, idx) {
+          var start = randomStart(sizeRef);
+          setTimeout(function () {
+            imgRef.style.top = start.y + 'px';
+            imgRef.style.left = start.x + 'px';
+            imgRef.style.transform = 'translate(-50%,-50%) scale(1) rotate(' + rotRef + 'deg)';
+            imgRef.style.opacity = '1';
+          }, 60 * idx);
+
+          var speed = 0.25 + Math.random() * 0.5;
+          var ang = Math.random() * Math.PI * 2;
+          var vx = Math.cos(ang) * speed;
+          var vy = Math.sin(ang) * speed;
+          var state = { el: imgRef, x: start.x, y: start.y, vx: vx, vy: vy, size: sizeRef, dragging: false, lastMouse: null, cleanup: null };
+          movers.push(state);
+          addDrag(imgRef, state);
+        })(img, size, rot, j);
+      }
+
+      // Sakura petals
+      for (var k = 0; k < 50; k++) {
+        var petal = document.createElement('div');
+        petal.className = 'sakura-petal';
+        petal.textContent = '🌸';
+        petal.style.left = (Math.random() * 100) + 'vw';
+        petal.style.animationDuration = (Math.random() * 3 + 5) + 's';
+        petal.style.animationDelay = (Math.random() * 5) + 's';
+        petal.style.fontSize = (Math.random() * 10 + 10) + 'px';
+        letterOverlay.insertBefore(petal, letterOverlay.firstChild);
+      }
+
+      startDrift();
+
+      // keep photos within viewport on resize
+      function onResize() {
+        var W = window.innerWidth, H = window.innerHeight;
+        for (var i2 = 0; i2 < movers.length; i2++) {
+          var m = movers[i2];
+          m.x = Math.min(Math.max(m.x, m.size / 2), W - m.size / 2);
+          m.y = Math.min(Math.max(m.y, m.size / 2), H - m.size / 2);
+        }
+      }
+      window.addEventListener('resize', onResize, { passive: true });
+
+      // store cleanup
+      window._overlayCleanup = function () {
+        window.removeEventListener('resize', onResize);
+        if (driftId) cancelAnimationFrame(driftId);
+        driftId = null;
+        for (var z = 0; z < movers.length; z++) {
+          if (movers[z].cleanup) movers[z].cleanup();
+        }
+        movers = [];
+      };
+
+      isOverlayOpening = false;
+    }, 300);
+  };
+
+  window.triggerBirthdaySurprise = function () {
+    if (letterContent) letterContent.classList.add('hidden');
+    if (birthdaySurprise) birthdaySurprise.classList.add('visible');
+
+    // Confetti sederhana (performant & auto-clean)
+    if (!birthdaySurprise) return;
+    var colors = ['#800000', '#ffb3b3', '#ffffff', '#ffdada', '#E8D5C4'];
+    var existing = birthdaySurprise.querySelectorAll('.confetti');
+    for (var x = 0; x < existing.length; x++) existing[x].remove();
+
+    for (var i = 0; i < 200; i++) {
+      var confetti = document.createElement('div');
+      confetti.className = 'confetti';
+      confetti.style.left = (Math.random() * 100) + 'vw';
+      confetti.style.top = (-20 + Math.random() * 20) + 'px';
+      confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      confetti.style.transform = 'scale(' + (Math.random() + 0.5) + ') rotate(' + (Math.random() * 360) + 'deg)';
+      confetti.style.animationDelay = (Math.random() * 0.2) + 's';
+      birthdaySurprise.appendChild(confetti);
+      (function (node) { setTimeout(function () { node.remove(); }, 4000); })(confetti);
+    }
+  };
+
+  window.closeLetterOverlay = function () {
+    document.body.classList.remove('no-scroll');
+    if (letterOverlay) letterOverlay.classList.remove('visible');
+    if (sunflowerContainer) sunflowerContainer.classList.remove('blooming');
+    if (window._overlayCleanup) { window._overlayCleanup(); window._overlayCleanup = null; }
+  };
+
+  // Transition overlay (opsional, dipanggil via JS jika dipakai)
+  window.fadeToLove = function (opts) {
+    opts = opts || {};
+    var image = opts.image || './Assets/gallery/fade-love.jpg';
+    var duration = typeof opts.duration === 'number' ? opts.duration : 1200;
+    var hold = typeof opts.hold === 'number' ? opts.hold : 1600;
+    var next = opts.next || 'letter'; // 'letter' | 'gallery'
+
+    if (!loveFade) { if (next === 'letter') window.openLetter(); else if (next === 'gallery') window.location.href = 'gallery.html'; return; }
+
+    // pasang background via CSS var
+    try { loveFade.style.setProperty('--love-bg', "url('" + image + "')"); } catch (_) {}
+
+    // Reduced motion: skip animasi panjang
+    if (prefersReduced) {
+      loveFade.classList.remove('show', 'hide', 'hold');
+      if (next === 'letter') window.openLetter();
+      else if (next === 'gallery') window.location.href = 'gallery.html';
+      return;
     }
 
-    window.closeLetterOverlay = function () {
-        document.body.classList.remove('no-scroll');
-        letterOverlay.classList.remove('visible');
-        sunflowerContainer.classList.remove('blooming');
-        isOverlayOpening = false;
+    loveFade.classList.add('show');
+    setTimeout(function () { loveFade.classList.add('hold'); }, duration);
+    setTimeout(function () {
+      loveFade.classList.remove('hold');
+      loveFade.classList.add('hide');
+      setTimeout(function () {
+        loveFade.classList.remove('show', 'hide');
+        try { loveFade.style.removeProperty('--love-bg'); } catch (_) {}
+        if (next === 'letter') window.openLetter();
+        else if (next === 'gallery') window.location.href = 'gallery.html';
+      }, 700);
+    }, duration + hold);
+  };
+
+  // Hemat baterai/perf: pause animasi saat tab tak aktif
+  document.addEventListener('visibilitychange', function () {
+    if (document.hidden) {
+      if (driftId) cancelAnimationFrame(driftId);
+      driftId = null;
+    } else {
+      if (!prefersReduced && movers.length && !driftId) startDrift();
     }
+  });
 });
