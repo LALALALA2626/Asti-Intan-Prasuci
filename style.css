@@ -921,3 +921,69 @@ nav ul li a.active-link::after {
   .prologue-container{ border-radius:18px; }
   .prologue-body p{ font-size: 15px; }
 }
+/* === Cross-browser & Responsive Additions (append-only) === */
+
+/* Media auto-scale tanpa merusak aspect ratio */
+img,
+video,
+canvas,
+svg {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Dynamic viewport units untuk mobile (perbaiki 100vh yang suka “nyangkut”) */
+.hero-section {
+    min-height: 100svh;
+}
+
+/* fallback modern */
+@supports (height: 100dvh) {
+    .hero-section {
+        height: 100dvh;
+    }
+
+    /* iOS/Android baru */
+}
+
+/* Disable fixed background di mobile (hindari stutter di iOS/Android WebView) */
+@media (max-width: 1024px) {
+    .hero-section {
+        background-attachment: scroll;
+    }
+}
+
+/* Safari prefix untuk backdrop blur (kalau ada yang pakai backdrop-filter) */
+header,
+.timer-box,
+#love-fade .love-caption,
+.birthday-wish,
+.gallery-card,
+#music-control {
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+}
+
+/* Fluid typography: judul tetap proporsional di semua ukuran layar */
+.special-name {
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+}
+
+/* Aksesibilitas: outline hanya saat keyboard navigation */
+:focus {
+    outline: none;
+}
+
+:focus-visible {
+    outline: 2px solid #ffb3b3;
+    outline-offset: 2px;
+}
+
+/* Hormati preferensi reduce-motion (matikan animasi berat) */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation: none !important;
+        transition: none !important;
+        scroll-behavior: auto !important;
+    }
+}
