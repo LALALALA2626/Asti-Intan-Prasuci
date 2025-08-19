@@ -402,3 +402,355 @@ document.addEventListener('DOMContentLoaded', function () {
     document.fonts.ready.then(applyNavHeight).catch(function(){});
   }
 })();
+
+/* ==========================================================
+   RomanceFX v1 — Background interaktif:
+   - Bokeh Hearts Parallax (always-on)
+   - Twinkle Sky + Shooting Hearts (landing accent)
+   - Sakura Rain (on-demand): window.RomanceFX.triggerSakura(ms)
+   Tanpa dependensi, tanpa edit HTML.
+   ========================================================== */
+(function(){
+  // Hindari double-init jika file dimuat dua kali
+  if (window.RomanceFX) return;
+
+  // Utilitas kecil
+  const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+  const rand = (a=0, b=1) => a + Math.random()*(b-a);
+  const TAU = Math.PI*2;
+
+  // Deteksi preferensi
+  const reducedMotion = matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Ambil palet dari CSS variables bila ada
+  function readPalette(){
+    const css = getComputedStyle(document.documentElement);
+    const a = (css.getPropertyValue('--brand')||'').trim() || '#FF6AA7';   // rose
+    const b = (css.getPropertyValue('--brand-2')||'').trim() || '#8B5CF6'; // lavender
+    return { a, b };
+  }
+  let PALETTE = readPalette();
+
+  // Buat layer canvas jika belum ada (tanpa edit HTML)
+  function ensureCanvas(id){
+    let c = document.getElementById(id);
+    if (!c){
+      c = document.createElement('canvas');
+      c.id = id;
+      document.body.prepend(c);
+    }
+    return c;
+  }
+
+  // Setup semua canvas
+  const cRom = ensureCanvas('fx-romance');
+  const cTwi = ensureCanvas('fx-twinkle');
+  const cSak = ensureCanvas('fx-sakura');
+
+  const ctxR = cRom.getContext('2d', { alpha:true });
+  const ctxT = cTwi.getContext('2d', { alpha:true });
+  const ctxS = cSak.getContext('2d', { alpha:true });
+
+  // DPR-aware sizing
+  let DPR = Math.max(1, Math.min(2, window.devicePixelRatio || 1));
+  function resize(){
+    const W = innerWidth, H = innerHeight;
+    [cRom, cTwi, cSak].forEach(c=>{
+      c.width  = Math.floor(W * DPR);
+      c.height = Math.floor(H * DPR);
+      c.style.width = W + 'px';
+      c.style.height = H + 'px';
+      const ctx = c.getContext('2d');
+      ctx.setTransform(DPR,0,0,DPR,0,0);
+    });
+  }
+  resize();
+  addEventListener('resize', resize, { passive:true });
+
+  // ====== Hearts + Bokeh engine ======
+  const hearts = [];
+  const bokehs = [];
+  const pointer = { x: innerWidth/2, y: innerHeight/2, active:false };
+
+  // jumlah partikel adaptif luas layar (ringan di mobile)
+  function targetCounts(){
+    const area = innerWidth * innerHeight;
+    const base = area / 28000; // tweak density
+    const heartsCount = Math.max(12, Math.min(36, Math.round(base * 0.7)));
+    const bokehCount  = Math.max(18, Math.min(48, Math.round(base * 0.9)));
+    return { heartsCount, bokehCount };
+  }
+
+  function addHeart(x = rand(0, innerWidth), y = rand(0, innerHeight), burst=false){
+    const s = rand(10, 22) * (burst ? 1.1 : 1);
+    hearts.push({
+      x, y,
+      vx: rand(-0.15, 0.15) + (burst ? rand(-0.6,0.6) : 0),
+      vy: rand(0.08, 0.22) - (burst ? rand(0.2,0.6) : 0), // naik pelan
+      r: rand(-Math.PI, Math.PI),
+      vr: rand(-0.01, 0.01),
+      s,
+      a: rand(0.55, 0.85),
+      life: rand(6, 12), // seconds
+    });
+  }
+
+  function addBokeh(){
+    bokehs.push({
+      x: rand(0, innerWidth),
+      y: rand(0, innerHeight),
+      r: rand(20, 60),
+      s: rand(0.25, 0.7),
+      a: rand(0.05, 0.18),
+      hue: rand(0, 360),
+      drift: rand(-0.25, 0.25)
+    });
+  }
+
+  // gambar heart dengan path (bezier)
+  function drawHeartPath(ctx, size){
+    const s = size/2;
+    ctx.beginPath();
+    ctx.moveTo(0, -s*0.35);
+    ctx.bezierCurveTo(s*0.5, -s*1.2,  s*1.6, -s*0.1,  0,  s*0.8);
+    ctx.bezierCurveTo(-s*1.6, -s*0.1, -s*0.5, -s*1.2,  0, -s*0.35);
+    ctx.closePath();
+  }
+
+  // pointer interaksi (parallax & burst)
+  addEventListener('pointermove', (e)=>{
+    pointer.x = e.clientX; pointer.y = e.clientY; pointer.active = true;
+  }, { passive:true });
+
+  addEventListener('pointerleave', ()=> { pointer.active = false; }, { passive:true });
+
+  addEventListener('click', (e)=>{
+    // burst kecil di posisi klik
+    for (let i=0;i<8;i++) addHeart(e.clientX, e.clientY, true);
+  }, { passive:true });
+
+  // inisialisasi jumlah target
+  (function seed(){
+    const { heartsCount, bokehCount } = targetCounts();
+    for (let i=0;i<heartsCount;i++) addHeart();
+    for (let i=0;i<bokehCount;i++) addBokeh();
+  })();
+
+  // ====== Twinkle Sky (+ shooting hearts) ======
+  const twinkles = [];
+  const twinkleCount = Math.max(18, Math.min(42, Math.round((innerWidth*innerHeight) / 90000)));
+  for (let i=0;i<twinkleCount;i++){
+    twinkles.push({
+      x: rand(0, innerWidth),
+      y: rand(0, innerHeight),
+      a: rand(0.05, 0.25),
+      s: rand(0.6, 1.6),
+      t: rand(0, TAU)
+    });
+  }
+
+  let shooting = null;
+  function maybeShoot(){
+    if (shooting || reducedMotion) return;
+    if (Math.random() < 0.012){ // kira2 tiap ~6-8 detik
+      const y = rand(innerHeight*0.1, innerHeight*0.7);
+      shooting = {
+        x: -40, y, vx: rand(3.2, 4.4), vy: rand(-0.6, -0.2),
+        life: 2.2, rot: rand(-0.2,0.2), size: rand(16,22)
+      };
+    }
+  }
+
+  // ====== Sakura Rain (on-demand) ======
+  const petals = [];
+  let sakuraUntil = 0; // timestamp aktif
+
+  function spawnPetal(n=24){
+    for (let i=0;i<n;i++){
+      petals.push({
+        x: rand(-40, innerWidth+40),
+        y: rand(-80, -20),
+        vx: rand(-0.6, 0.2),
+        vy: rand(0.8, 1.6),
+        r: rand(0, TAU),
+        vr: rand(-0.02, 0.02),
+        s: rand(8, 18),
+        a: rand(0.35, 0.75)
+      });
+    }
+  }
+
+  // ====== Render Loop ======
+  let last = performance.now();
+  function loop(now){
+    const dt = Math.min(0.05, (now - last)/1000); // detik, clamp
+    last = now;
+
+    // clear
+    ctxR.clearRect(0,0,cRom.width/DPR,cRom.height/DPR);
+    ctxT.clearRect(0,0,cTwi.width/DPR,cTwi.height/DPR);
+    ctxS.clearRect(0,0,cSak.width/DPR,cSak.height/DPR);
+
+    // === Romance (hearts + bokeh) ===
+    // Bokeh
+    for (let i=0;i<bokehs.length;i++){
+      const b = bokehs[i];
+      b.x += b.drift * dt * 20;
+      b.y += Math.sin((i+b.drift)*0.3 + now*0.0006) * 0.15;
+      // wrap
+      if (b.x < -b.r) b.x = innerWidth + b.r;
+      if (b.x > innerWidth + b.r) b.x = -b.r;
+      if (b.y < -b.r) b.y = innerHeight + b.r;
+      if (b.y > innerHeight + b.r) b.y = -b.r;
+
+      const grd = ctxR.createRadialGradient(b.x, b.y, b.r*0.1, b.x, b.y, b.r);
+      grd.addColorStop(0, `hsla(${b.hue}, 90%, 70%, ${b.a})`);
+      grd.addColorStop(1, "hsla(0, 0%, 100%, 0)");
+      ctxR.fillStyle = grd;
+      ctxR.beginPath();
+      ctxR.arc(b.x, b.y, b.r, 0, TAU);
+      ctxR.fill();
+    }
+
+    // Hearts
+    for (let i=hearts.length-1; i>=0; i--){
+      const h = hearts[i];
+      // parallax ringan menjauh dari pointer
+      if (pointer.active){
+        const dx = h.x - pointer.x, dy = h.y - pointer.y;
+        const d2 = Math.max(24, dx*dx + dy*dy);
+        const f = 60 / d2;
+        h.vx += Math.max(-0.02, Math.min(0.02, dx * f));
+        h.vy += Math.max(-0.02, Math.min(0.02, dy * f));
+      }
+      h.x += h.vx * 60 * dt;
+      h.y += h.vy * 60 * dt;
+      h.r += h.vr;
+      h.life -= dt;
+
+      // respawn jika lewat bawah/atas/tepi atau life habis
+      if (h.y < -40 || h.y > innerHeight + 40 || h.x < -40 || h.x > innerWidth + 40 || h.life <= 0){
+        hearts.splice(i,1);
+        addHeart();
+        continue;
+      }
+
+      // draw
+      ctxR.save();
+      ctxR.translate(h.x, h.y);
+      ctxR.rotate(h.r);
+      drawHeartPath(ctxR, h.s);
+      const grd = ctxR.createLinearGradient(-h.s, -h.s, h.s, h.s);
+      grd.addColorStop(0, PALETTE.a + "CC");
+      grd.addColorStop(1, PALETTE.b + "CC");
+      ctxR.fillStyle = grd;
+      ctxR.globalAlpha = h.a;
+      ctxR.fill();
+      ctxR.restore();
+    }
+
+    // === Twinkle sky ===
+    for (let i=0;i<twinkles.length;i++){
+      const t = twinkles[i];
+      t.t += dt * rand(1.2,2.0);
+      const blink = (Math.sin(t.t) + 1)/2; // 0..1
+      const a = t.a * (0.3 + 0.7*blink);
+
+      ctxT.save();
+      ctxT.globalAlpha = a;
+      ctxT.beginPath();
+      ctxT.arc(t.x, t.y, t.s, 0, TAU);
+      ctxT.fillStyle = '#ffffff';
+      ctxT.shadowColor = '#ffffff';
+      ctxT.shadowBlur = 8;
+      ctxT.fill();
+      ctxT.restore();
+    }
+
+    // Shooting heart sesekali (hanya jika bukan reduced motion)
+    maybeShoot();
+    if (shooting){
+      shooting.x += shooting.vx;
+      shooting.y += shooting.vy;
+      shooting.life -= dt;
+
+      ctxT.save();
+      ctxT.translate(shooting.x, shooting.y);
+      ctxT.rotate(shooting.rot);
+      drawHeartPath(ctxT, shooting.size);
+      const grd = ctxT.createLinearGradient(-shooting.size, -shooting.size, shooting.size, shooting.size);
+      grd.addColorStop(0, PALETTE.a + "AA");
+      grd.addColorStop(1, PALETTE.b + "AA");
+      ctxT.fillStyle = grd;
+      ctxT.shadowColor = PALETTE.a;
+      ctxT.shadowBlur = 12;
+      ctxT.globalAlpha = 0.85;
+      ctxT.fill();
+      ctxT.restore();
+
+      if (shooting.x > innerWidth + 60 || shooting.y < -60 || shooting.life <= 0){
+        shooting = null;
+      }
+    }
+
+    // === Sakura (aktif saat dipicu) ===
+    if (performance.now() < sakuraUntil){
+      if (petals.length < 120) spawnPetal(12);
+    }
+    for (let i=petals.length-1; i>=0; i--){
+      const p = petals[i];
+      p.x += p.vx; p.y += p.vy; p.r += p.vr;
+      // angin ringan
+      p.vx += Math.sin((now*0.001)+i)*0.0006;
+
+      // recycle kalau keluar layar
+      if (p.x < -60 || p.x > innerWidth + 60 || p.y > innerHeight + 60){
+        petals.splice(i,1);
+        continue;
+      }
+
+      // petal path sederhana (oval miring)
+      ctxS.save();
+      ctxS.translate(p.x, p.y);
+      ctxS.rotate(p.r);
+      ctxS.globalAlpha = p.a;
+      ctxS.fillStyle = '#ffd5e1';
+      ctxS.beginPath();
+      ctxS.ellipse(0, 0, p.s*0.6, p.s*0.35, 0, 0, TAU);
+      ctxS.fill();
+      ctxS.restore();
+    }
+
+    raf = requestAnimationFrame(loop);
+  }
+
+  let raf = requestAnimationFrame(loop);
+
+  // Pause saat tab tak aktif
+  document.addEventListener('visibilitychange', ()=>{
+    if (document.hidden){ cancelAnimationFrame(raf); }
+    else { last = performance.now(); raf = requestAnimationFrame(loop); }
+  });
+
+  // Refresh palet saat theme var berubah
+  const mo = new MutationObserver(()=>{ PALETTE = readPalette(); });
+  mo.observe(document.documentElement, { attributes:true, attributeFilter:['style','class','data-theme'] });
+
+  // API publik
+  window.RomanceFX = {
+    /** Panggil untuk memicu hujan sakura selama `ms` milidetik (default 10000) */
+    triggerSakura: function(ms=10000){
+      if (reducedMotion) return;
+      sakuraUntil = performance.now() + ms;
+      spawnPetal(36);
+    }
+  };
+
+  // Opsional: otomatis trigger sakura ketika elemen tertentu diklik (jika ada)
+  // Tanpa mengubah HTML: deteksi tombol yang "mirip" open letter
+  addEventListener('click', (e)=>{
+    const t = e.target.closest('[data-sakura-trigger], .open-letter, #open-letter');
+    if (t) window.RomanceFX.triggerSakura(8000);
+  }, { passive:true });
+
+})();
