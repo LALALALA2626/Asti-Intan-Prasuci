@@ -1315,3 +1315,19 @@ html {
         margin-top: calc(var(--nav-h) + 3vh);
     }
 }
+
+/* === RomanceFX Layers (tidak ganggu layout/klick) === */
+#fx-romance,
+#fx-twinkle,
+#fx-sakura {
+  position: fixed;
+  inset: 0;
+  z-index: -1;         /* selalu di belakang konten */
+  pointer-events: none;
+  display: block;
+}
+
+/* Hormati preferensi user yang sensitif terhadap gerakan */
+@media (prefers-reduced-motion: reduce) {
+  #fx-romance, #fx-twinkle, #fx-sakura { display: none !important; }
+}
