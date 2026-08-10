@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // --- Elements ---
   var letterOverlay = document.getElementById('letter-overlay');
-  var letterContent = letterOverlay ? letterOverlay.querySelector('.letter-content') : null;
+  var letterImmersive = letterOverlay ? letterOverlay.querySelector('.letter-immersive') : null;
   var birthdaySurprise = document.getElementById('birthday-surprise');
   var sunflowerContainer = document.getElementById('sunflower-container');
   var loveFade = document.getElementById('love-fade');
@@ -265,89 +265,28 @@ document.addEventListener('DOMContentLoaded', function () {
 
     setTimeout(function () {
       document.body.classList.add('no-scroll');
-      if (letterContent) letterContent.classList.remove('hidden');
+      if (letterImmersive) letterImmersive.style.display = '';
       if (birthdaySurprise) birthdaySurprise.classList.remove('visible');
 
-      var old = letterOverlay.querySelectorAll('.floating-photo, .sakura-petal');
-      for (var i = 0; i < old.length; i++) old[i].remove();
-
+      letterOverlay.scrollTop = 0;
       letterOverlay.classList.add('visible');
-      movers = [];
 
-      for (var j = 0; j < floatingPhotoUrls.length; j++) {
-        var img = document.createElement('img');
-        img.src = floatingPhotoUrls[j];
-        img.alt = 'Moment photo';
-        img.className = 'floating-photo';
-        letterOverlay.insertBefore(img, letterOverlay.firstChild);
-
-        var size = Math.floor(160 + Math.random() * 100);
-        var rot = Math.random() * 30 - 15;
-        img.style.setProperty('--size', size + 'px');
-        img.style.setProperty('--base-rot', rot + 'deg');
-        img.style.animationDelay = (Math.random() * 1.2) + 's';
-
-        (function (imgRef, sizeRef, rotRef, idx) {
-          var start = randomStart(sizeRef);
-          setTimeout(function () {
-            imgRef.style.top = start.y + 'px';
-            imgRef.style.left = start.x + 'px';
-            imgRef.style.transform = 'translate(-50%,-50%) scale(1) rotate(' + rotRef + 'deg)';
-            imgRef.style.opacity = '1';
-          }, 50 * idx);
-
-          var ang = Math.random() * Math.PI * 2;
-          var spd = 0.2 + Math.random() * 0.4;
-          var state = {
-            el: imgRef, x: start.x, y: start.y,
-            vx: Math.cos(ang) * spd, vy: Math.sin(ang) * spd,
-            size: sizeRef, dragging: false, lastMouse: null, cleanup: null
-          };
-          movers.push(state);
-          addDrag(imgRef, state);
-        })(img, size, rot, j);
+      var lazyImgs = letterOverlay.querySelectorAll('img[loading="lazy"]');
+      for (var i = 0; i < lazyImgs.length; i++) {
+        lazyImgs[i].loading = 'eager';
+        var s = lazyImgs[i].src;
+        lazyImgs[i].src = '';
+        lazyImgs[i].src = s;
       }
 
-      // Sakura petals
-      for (var k = 0; k < 40; k++) {
-        var petal = document.createElement('div');
-        petal.className = 'sakura-petal';
-        petal.textContent = '🌸';
-        petal.style.left = (Math.random() * 100) + 'vw';
-        petal.style.animationDuration = (Math.random() * 3 + 5) + 's';
-        petal.style.animationDelay = (Math.random() * 5) + 's';
-        petal.style.fontSize = (Math.random() * 10 + 10) + 'px';
-        letterOverlay.insertBefore(petal, letterOverlay.firstChild);
-      }
-
-      startDrift();
-
-      function onResize() {
-        var W = window.innerWidth, H = window.innerHeight;
-        for (var i2 = 0; i2 < movers.length; i2++) {
-          movers[i2].x = Math.min(Math.max(movers[i2].x, movers[i2].size / 2), W - movers[i2].size / 2);
-          movers[i2].y = Math.min(Math.max(movers[i2].y, movers[i2].size / 2), H - movers[i2].size / 2);
-        }
-      }
-      window.addEventListener('resize', onResize, { passive: true });
-
-      window._overlayCleanup = function () {
-        window.removeEventListener('resize', onResize);
-        if (driftId) cancelAnimationFrame(driftId);
-        driftId = null;
-        for (var z = 0; z < movers.length; z++) {
-          if (movers[z].cleanup) movers[z].cleanup();
-        }
-        movers = [];
-      };
-
+      window._overlayCleanup = function () {};
       isOverlayOpening = false;
     }, 300);
   };
 
   // --- Public: Birthday Surprise ---
   window.triggerBirthdaySurprise = function () {
-    if (letterContent) letterContent.classList.add('hidden');
+    if (letterImmersive) letterImmersive.style.display = 'none';
     if (birthdaySurprise) birthdaySurprise.classList.add('visible');
 
     if (!birthdaySurprise) return;
