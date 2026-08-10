@@ -2,6 +2,59 @@
 // Main Script — Home page + shared components
 // ============================================================
 
+// === Birthday Lock Screen ===
+(function birthdayLock() {
+  var unlockDate = new Date('2026-08-16T00:00:00+07:00');
+  var now = new Date();
+  if (now >= unlockDate) return;
+
+  document.documentElement.style.overflow = 'hidden';
+
+  var lock = document.createElement('div');
+  lock.id = 'birthday-lock';
+  lock.innerHTML =
+    '<div class="bl-glow"></div>' +
+    '<div class="bl-content">' +
+      '<span class="bl-badge">Coming Soon</span>' +
+      '<h1 class="bl-title">For My Only One</h1>' +
+      '<p class="bl-sub">Sesuatu yang spesial sedang disiapkan untukmu...</p>' +
+      '<div class="bl-countdown">' +
+        '<div class="bl-unit"><span id="bl-days">0</span><small>Hari</small></div>' +
+        '<div class="bl-sep">:</div>' +
+        '<div class="bl-unit"><span id="bl-hours">0</span><small>Jam</small></div>' +
+        '<div class="bl-sep">:</div>' +
+        '<div class="bl-unit"><span id="bl-mins">0</span><small>Menit</small></div>' +
+        '<div class="bl-sep">:</div>' +
+        '<div class="bl-unit"><span id="bl-secs">0</span><small>Detik</small></div>' +
+      '</div>' +
+      '<div class="bl-heart"><svg viewBox="0 0 24 24" width="24" height="24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" fill="currentColor"/></svg></div>' +
+      '<p class="bl-date">16 Agustus 2026</p>' +
+    '</div>';
+  document.body.appendChild(lock);
+
+  function tick() {
+    var diff = unlockDate - Date.now();
+    if (diff <= 0) {
+      lock.style.opacity = '0';
+      setTimeout(function() {
+        lock.remove();
+        document.documentElement.style.overflow = '';
+      }, 800);
+      return;
+    }
+    var d = Math.floor(diff / 86400000);
+    var h = Math.floor((diff % 86400000) / 3600000);
+    var m = Math.floor((diff % 3600000) / 60000);
+    var s = Math.floor((diff % 60000) / 1000);
+    document.getElementById('bl-days').textContent = d;
+    document.getElementById('bl-hours').textContent = h < 10 ? '0' + h : h;
+    document.getElementById('bl-mins').textContent = m < 10 ? '0' + m : m;
+    document.getElementById('bl-secs').textContent = s < 10 ? '0' + s : s;
+    requestAnimationFrame(function() { setTimeout(tick, 1000); });
+  }
+  tick();
+})();
+
 // === Navigation: scroll effect + hamburger ===
 (function initNav() {
   var header = document.querySelector('header[role="banner"]');

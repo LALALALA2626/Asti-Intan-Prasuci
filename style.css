@@ -3,6 +3,151 @@
    For Asti Intan Prasuci's 26th Birthday
    ============================================================ */
 
+/* ============================================================
+   BIRTHDAY LOCK SCREEN
+   ============================================================ */
+#birthday-lock {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: linear-gradient(160deg, #080510 0%, #12081a 40%, #0d0612 70%, #080510 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: opacity 0.8s ease;
+  overflow: hidden;
+}
+
+.bl-glow {
+  position: absolute;
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(232,160,191,0.15) 0%, rgba(201,179,224,0.06) 50%, transparent 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  animation: bl-pulse 6s ease-in-out infinite;
+}
+
+@keyframes bl-pulse {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+  50%      { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+}
+
+.bl-content {
+  position: relative;
+  text-align: center;
+  color: #fff;
+  padding: 40px 24px;
+}
+
+.bl-badge {
+  display: inline-block;
+  padding: 6px 24px;
+  border-radius: 100px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: rgba(232,160,191,0.6);
+  border: 1px solid rgba(232,160,191,0.15);
+  background: rgba(232,160,191,0.04);
+  margin-bottom: 28px;
+}
+
+.bl-title {
+  font-family: 'Great Vibes', cursive;
+  font-size: clamp(3rem, 10vw, 5.5rem);
+  background: linear-gradient(135deg, #e8a0bf 0%, #d4a8c8 30%, #c9b3e0 60%, #f0d5a8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+  margin-bottom: 16px;
+}
+
+.bl-sub {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 48px;
+}
+
+.bl-countdown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+}
+
+.bl-unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  min-width: 72px;
+  padding: 20px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 16px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.bl-unit span {
+  font-family: 'Montserrat', sans-serif;
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: 2px;
+  color: #fff;
+}
+
+.bl-unit small {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.3);
+}
+
+.bl-sep {
+  font-size: 1.5rem;
+  color: rgba(232,160,191,0.3);
+  margin-top: -20px;
+}
+
+.bl-heart {
+  color: rgba(232,160,191,0.3);
+  margin-bottom: 16px;
+  animation: bl-heartbeat 2s ease-in-out infinite;
+}
+
+@keyframes bl-heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%      { transform: scale(1.15); }
+  28%      { transform: scale(1); }
+  42%      { transform: scale(1.1); }
+  56%      { transform: scale(1); }
+}
+
+.bl-date {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.7rem;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.2);
+}
+
+@media (max-width: 768px) {
+  .bl-unit { min-width: 60px; padding: 16px 8px; }
+  .bl-unit span { font-size: clamp(1.4rem, 6vw, 2rem); }
+  .bl-countdown { gap: 8px; }
+}
+
 :root {
   /* --- Palette --- */
   --bg-deep:      #080810;
