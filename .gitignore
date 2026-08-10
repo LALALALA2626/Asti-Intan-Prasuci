@@ -1,0 +1,15 @@
+# Original MOV files (too large for GitHub, converted to MP4)
+*.MOV
+
+# Claude Code local config
+.claude/
+
+# System files
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Editor
+*.swp
+*.swo
+*~

@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>For My Only One, Asti</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Background FX canvases -->
+  <canvas id="fx-romance" aria-hidden="true"></canvas>
+  <canvas id="fx-twinkle" aria-hidden="true"></canvas>
+  <canvas id="fx-sakura" aria-hidden="true"></canvas>
+
+  <!-- Navigation -->
+  <header role="banner">
+    <nav aria-label="Primary">
+      <a href="index.html" class="nav-brand">A & F</a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a class="active-link" href="index.html" aria-current="page">Home</a></li>
+        <li><a href="gallery.html">Our Story</a></li>
+        <li><a href="memories-2025.html">Kenangan 2025</a></li>
+        <li><a href="anniversary.html">Anniversary</a></li>
+        <li><a href="wave-to-earth.html">Wave to Earth</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <span class="hero-badge">Happy 26th Birthday</span>
+        <h1 class="hero-name">Asti Intan Prasuci</h1>
+        <p class="hero-quote">"You are not just a star in my sky, you are the entire constellation that guides me home."</p>
+
+        <!-- Countdown -->
+        <div id="countdown" class="countdown" aria-live="polite">
+          <div class="countdown-item">
+            <span class="countdown-value" id="days">0</span>
+            <span class="countdown-label">Hari</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-value" id="hours">0</span>
+            <span class="countdown-label">Jam</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-value" id="minutes">0</span>
+            <span class="countdown-label">Menit</span>
+          </div>
+          <div class="countdown-item">
+            <span class="countdown-value" id="seconds">0</span>
+            <span class="countdown-label">Detik</span>
+          </div>
+        </div>
+
+        <div class="hero-actions">
+          <button class="btn btn-primary" onclick="openLetter()">Buka Surat</button>
+          <a href="gallery.html" class="btn btn-ghost">Lihat Galeri</a>
+        </div>
+      </div>
+
+      <!-- Sunflower -->
+      <div id="sunflower-container" role="button" aria-label="Buka surat" tabindex="0"
+           onclick="openLetter()" onkeydown="if(event.key==='Enter'){openLetter()}">
+        <svg class="sunflower realistic" viewBox="0 0 340 580" preserveAspectRatio="xMidYMid meet"
+             xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <linearGradient id="stemG" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stop-color="#4a8c3f"/>
+              <stop offset="100%" stop-color="#2d6b25"/>
+            </linearGradient>
+            <linearGradient id="leafG" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="#5da04e"/>
+              <stop offset="100%" stop-color="#3a7a30"/>
+            </linearGradient>
+            <linearGradient id="pG1" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stop-color="#FFE44D"/>
+              <stop offset="35%" stop-color="#FFD700"/>
+              <stop offset="100%" stop-color="#E8A317"/>
+            </linearGradient>
+            <linearGradient id="pG2" x1="0.5" y1="0" x2="0.5" y2="1">
+              <stop offset="0%" stop-color="#FFF176"/>
+              <stop offset="45%" stop-color="#FFE082"/>
+              <stop offset="100%" stop-color="#F9A825"/>
+            </linearGradient>
+            <radialGradient id="ctrG" cx="50%" cy="42%" r="55%">
+              <stop offset="0%" stop-color="#8B6914"/>
+              <stop offset="45%" stop-color="#5D4108"/>
+              <stop offset="100%" stop-color="#3B2506"/>
+            </radialGradient>
+            <filter id="fSh" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-color="#000" flood-opacity="0.2"/>
+            </filter>
+            <symbol id="pt" viewBox="-12 -68 24 68">
+              <path d="M0,-64 C5,-58 10,-42 11,-24 C11.5,-12 8,-2 0,0 C-8,-2 -11.5,-12 -11,-24 C-10,-42 -5,-58 0,-64Z" fill="url(#pG1)"/>
+              <path d="M0,-60 C4,-55 7,-40 7.5,-24 C8,-14 5.5,-4 0,-2 C-5.5,-4 -8,-14 -7.5,-24 C-7,-40 -4,-55 0,-60Z" fill="url(#pG2)" opacity="0.65"/>
+              <line x1="0" y1="-58" x2="0" y2="-4" stroke="#d4960f" stroke-width="0.5" opacity="0.2"/>
+            </symbol>
+          </defs>
+          <g class="sway">
+            <!-- Stem -->
+            <path d="M170 570 Q168 490, 170 410 Q172 330, 168 260 Q166 200, 170 150"
+                  stroke="url(#stemG)" stroke-width="9" fill="none" stroke-linecap="round"/>
+            <!-- Right leaf -->
+            <g transform="translate(172,370)">
+              <path d="M0,0 C20,-8 48,-18 58,-40 C60,-46 52,-48 42,-38 C28,-22 12,-8 0,0Z" fill="url(#leafG)"/>
+              <path d="M2,-1 Q30,-16 55,-39" stroke="#3a7a30" stroke-width="0.7" fill="none" opacity="0.4"/>
+              <path d="M12,-5 Q24,-14 32,-22" stroke="#3a7a30" stroke-width="0.4" fill="none" opacity="0.3"/>
+            </g>
+            <!-- Left leaf -->
+            <g transform="translate(168,310)">
+              <path d="M0,0 C-18,-10 -45,-22 -55,-42 C-56,-48 -48,-48 -40,-38 C-26,-22 -10,-8 0,0Z" fill="url(#leafG)"/>
+              <path d="M-2,-1 Q-28,-18 -52,-40" stroke="#3a7a30" stroke-width="0.7" fill="none" opacity="0.4"/>
+            </g>
+            <!-- Small bud leaf -->
+            <g transform="translate(170,240)">
+              <path d="M0,0 C14,-6 28,-14 32,-28 C32,-32 26,-30 22,-24 C14,-14 6,-4 0,0Z" fill="url(#leafG)" opacity="0.7"/>
+            </g>
+            <!-- Flower head -->
+            <g transform="translate(170,148)">
+              <!-- Outer petals — 20 petals -->
+              <g filter="url(#fSh)" opacity="0.95">
+                <use href="#pt" transform="rotate(0) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(18) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(36) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(54) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(72) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(90) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(108) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(126) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(144) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(162) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(180) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(198) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(216) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(234) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(252) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(270) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(288) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(306) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(324) translate(0,-2) scale(1.08)"/>
+                <use href="#pt" transform="rotate(342) translate(0,-2) scale(1.08)"/>
+              </g>
+              <!-- Inner petals — 20 petals, offset 9° -->
+              <g opacity="0.9">
+                <use href="#pt" transform="rotate(9) scale(0.92)"/>
+                <use href="#pt" transform="rotate(27) scale(0.92)"/>
+                <use href="#pt" transform="rotate(45) scale(0.92)"/>
+                <use href="#pt" transform="rotate(63) scale(0.92)"/>
+                <use href="#pt" transform="rotate(81) scale(0.92)"/>
+                <use href="#pt" transform="rotate(99) scale(0.92)"/>
+                <use href="#pt" transform="rotate(117) scale(0.92)"/>
+                <use href="#pt" transform="rotate(135) scale(0.92)"/>
+                <use href="#pt" transform="rotate(153) scale(0.92)"/>
+                <use href="#pt" transform="rotate(171) scale(0.92)"/>
+                <use href="#pt" transform="rotate(189) scale(0.92)"/>
+                <use href="#pt" transform="rotate(207) scale(0.92)"/>
+                <use href="#pt" transform="rotate(225) scale(0.92)"/>
+                <use href="#pt" transform="rotate(243) scale(0.92)"/>
+                <use href="#pt" transform="rotate(261) scale(0.92)"/>
+                <use href="#pt" transform="rotate(279) scale(0.92)"/>
+                <use href="#pt" transform="rotate(297) scale(0.92)"/>
+                <use href="#pt" transform="rotate(315) scale(0.92)"/>
+                <use href="#pt" transform="rotate(333) scale(0.92)"/>
+                <use href="#pt" transform="rotate(351) scale(0.92)"/>
+              </g>
+              <!-- Center disc -->
+              <circle r="52" fill="url(#ctrG)"/>
+              <circle r="52" fill="url(#ctrG)" opacity="0.3"/>
+              <!-- Fibonacci seed spiral -->
+              <g fill="#D4A017" opacity="0.7">
+                <circle cx="-3.8" cy="3.5" r="1.1"/>
+                <circle cx="0.6" cy="-7.3" r="1.2"/>
+                <circle cx="5.5" cy="7.1" r="1.2"/>
+                <circle cx="-10.2" cy="-1.8" r="1.2"/>
+                <circle cx="9.8" cy="-6.2" r="1.3"/>
+                <circle cx="-3.3" cy="12.3" r="1.3"/>
+                <circle cx="-6.3" cy="-12.2" r="1.3"/>
+                <circle cx="13.8" cy="5.0" r="1.3"/>
+                <circle cx="-14.4" cy="6.0" r="1.4"/>
+                <circle cx="7.0" cy="-14.9" r="1.4"/>
+                <circle cx="5.2" cy="16.5" r="1.4"/>
+                <circle cx="-15.6" cy="-9.0" r="1.4"/>
+                <circle cx="18.3" cy="-4.0" r="1.4"/>
+                <circle cx="-11.2" cy="15.9" r="1.4"/>
+                <circle cx="-2.6" cy="-20.0" r="1.5"/>
+                <circle cx="15.9" cy="13.4" r="1.5"/>
+                <circle cx="-21.4" cy="0.9" r="1.5"/>
+                <circle cx="15.6" cy="-15.6" r="1.5"/>
+                <circle cx="-1.0" cy="22.6" r="1.5"/>
+                <circle cx="-14.9" cy="-17.9" r="1.5"/>
+              </g>
+              <g fill="#C4922E" opacity="0.55">
+                <circle cx="23.6" cy="3.2" r="1.5"/>
+                <circle cx="-20.0" cy="13.9" r="1.6"/>
+                <circle cx="5.5" cy="-24.3" r="1.6"/>
+                <circle cx="12.7" cy="22.1" r="1.6"/>
+                <circle cx="-24.8" cy="-7.9" r="1.6"/>
+                <circle cx="24.1" cy="-11.1" r="1.6"/>
+                <circle cx="-10.4" cy="24.9" r="1.6"/>
+                <circle cx="-9.3" cy="-25.9" r="1.6"/>
+                <circle cx="24.8" cy="13.0" r="1.6"/>
+                <circle cx="-27.5" cy="7.3" r="1.7"/>
+                <circle cx="15.7" cy="-24.4" r="1.7"/>
+                <circle cx="5.0" cy="29.0" r="1.7"/>
+                <circle cx="-23.6" cy="-18.3" r="1.7"/>
+                <circle cx="30.2" cy="-2.5" r="1.7"/>
+                <circle cx="-20.9" cy="22.6" r="1.7"/>
+                <circle cx="0.2" cy="-31.2" r="1.7"/>
+                <circle cx="21.2" cy="23.4" r="1.7"/>
+                <circle cx="-31.9" cy="-3.0" r="1.7"/>
+                <circle cx="25.9" cy="-19.6" r="1.7"/>
+                <circle cx="-5.9" cy="32.4" r="1.8"/>
+              </g>
+              <g fill="#A67B20" opacity="0.4">
+                <circle cx="-17.7" cy="-28.2" r="1.8"/>
+                <circle cx="32.5" cy="8.9" r="1.8"/>
+                <circle cx="-30.3" cy="15.6" r="1.8"/>
+                <circle cx="12.0" cy="-32.3" r="1.8"/>
+                <circle cx="13.1" cy="32.3" r="1.8"/>
+                <circle cx="-31.9" cy="-15.1" r="1.8"/>
+                <circle cx="34.1" cy="-10.5" r="1.8"/>
+                <circle cx="-18.2" cy="31.1" r="1.8"/>
+                <circle cx="-7.6" cy="-35.6" r="1.8"/>
+                <circle cx="30.0" cy="21.3" r="1.8"/>
+                <circle cx="-36.9" cy="4.6" r="1.9"/>
+                <circle cx="24.3" cy="-28.5" r="1.9"/>
+                <circle cx="1.4" cy="37.8" r="1.9"/>
+                <circle cx="-26.8" cy="-27.2" r="1.9"/>
+                <circle cx="38.5" cy="2.0" r="1.9"/>
+                <circle cx="-30.0" cy="24.8" r="1.9"/>
+                <circle cx="5.4" cy="-38.9" r="1.9"/>
+                <circle cx="22.5" cy="32.6" r="1.9"/>
+                <circle cx="-38.9" cy="-9.0" r="1.9"/>
+                <circle cx="35.1" cy="-19.8" r="1.9"/>
+              </g>
+              <!-- Highlight -->
+              <ellipse cx="-10" cy="-12" rx="16" ry="10" fill="#fff" opacity="0.06"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- 26 REASONS -->
+    <section class="reasons-section" id="reasons">
+      <div class="section-header">
+        <span class="section-badge">Special for You</span>
+        <h2 class="section-title">26 Alasan Aku Mencintaimu</h2>
+        <p class="section-subtitle">Satu untuk setiap tahun kehidupanmu yang indah</p>
+        <div class="section-divider"><span></span><span></span><span></span></div>
+      </div>
+      <div class="reasons-grid" id="reasons-grid"></div>
+    </section>
+  </main>
+
+  <!-- LETTER OVERLAY -->
+  <div id="letter-overlay" aria-hidden="true">
+    <button class="close-overlay-button" onclick="closeLetterOverlay()" aria-label="Tutup">&times;</button>
+    <div class="letter-content" role="dialog" aria-modal="true" aria-label="Surat untukmu">
+      <h2>Untukmu, My Favorite Girl</h2>
+      <p>Selamat ulang tahun sayang, aku ga nyangka masih bisa merayakan ultah kamu untuk kedua kalinya di tengah pasang surut hubungan kita dan juga letihnya kita dalam hal-hal yang kita tempuh saat ini. Kita masih bisa saling kuat walaupun guncangan dari luar — baik itu keluarga, dan hal-hal lainnya — sudah mulai membenturkan hubungan kita.<br><br>
+        Disini, aku mau ngucapin selamat ulang tahun yang ke-26 sayangku. Aku bersyukur kamu masih bisa terus survive sampai ke umur kamu yang ke-26 ini dengan pekerjaan kamu yang berat sekarang — dan juga kita. Beberapa hal yang beda dari tahun sebelumnya memang kentara sayang, sampai beberapa kali kita selalu debat terkait hal itu lagi.<br><br>
+        Aku harap kamu bisa selalu bersyukur terhadap apa yang udah kamu capai di umur yang baru ini. Semoga kita bisa selalu kuat menghadapi rintangan bareng-bareng. Apalagi ngadepin aku sih sebenarnya.<br><br>
+        Aku harap kamu selalu sehat sayang, jangan biarkan kebaikan kamu terhadap orang lain itu putus — tapi ingat, diri sendiri juga perlu dibaikin. Mulai planning yang baik terhadap masa yang akan datang: segi keuangan, mental, fisik, pikiran, dan kedewasaan sayang ya.<br><br>
+        Aku minta maaf sayang kadonya nyusul ya, aku belum gajian soalnya :&quot;)</p>
+      <button class="btn btn-primary" onclick="triggerBirthdaySurprise()">Lanjutkan...</button>
+    </div>
+    <div id="birthday-surprise">
+      <h1 class="birthday-title">Selamat Ulang Tahun ke-26, Cintaku!</h1>
+      <p class="birthday-subtitle">Semoga semua mimpimu terwujud.</p>
+      <div class="birthday-wish">
+        <p>Di hari yang istimewa ini, aku tidak punya banyak kata selain doa dan harapan terbaik untukmu.
+          Semoga kamu selalu dikelilingi kebahagiaan, diberikan kesehatan, dan dimudahkan dalam setiap langkahmu
+          untuk meraih semua yang kamu impikan. Terima kasih telah menjadi cahaya, sumber kekuatan, dan alasan
+          di balik senyumku setiap hari. Aku sangat beruntung memilikimu.</p>
+      </div>
+      <button class="btn btn-primary" onclick="window.location.href='gallery.html'">Lihat Kisah Kita</button>
+    </div>
+  </div>
+
+  <!-- Fade to Love overlay -->
+  <div id="love-fade" aria-hidden="true">
+    <div class="love-caption">
+      <p>"Every version of me loves every version of you."</p>
+    </div>
+  </div>
+
+  <!-- Spotify Player -->
+  <div class="spotify-player" id="spotify-player">
+    <span class="sp-toggle" onclick="document.getElementById('spotify-player').classList.toggle('collapsed')" aria-label="Toggle music">&#9835;</span>
+    <div class="sp-body">
+      <div class="sp-header">
+        <span class="sp-title">Wave to Earth</span>
+        <span class="sp-close" onclick="document.getElementById('spotify-player').classList.toggle('collapsed')">&times;</span>
+      </div>
+      <iframe src="https://open.spotify.com/embed/artist/5069JTmv5ZDyPeZaCCXiCg?utm_source=generator&theme=0" width="100%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy" style="border-radius:12px"></iframe>
+    </div>
+  </div>
+
+  <noscript>
+    <p style="color:white;text-align:center;padding:1rem">Javascript nonaktif. Beberapa interaksi mungkin tidak berfungsi.</p>
+  </noscript>
+
+  <script src="Script.Js" defer></script>
+  <script>
+  (function(){
+    var player = document.getElementById('spotify-player');
+    if (player) player.classList.add('collapsed');
+  })();
+  </script>
+</body>
+</html>

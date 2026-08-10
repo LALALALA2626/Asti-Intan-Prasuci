@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Anniversary — 10 Juni 2026</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body class="anniversary-page">
+
+  <canvas id="anniv-particles" aria-hidden="true"></canvas>
+
+  <!-- Navigation -->
+  <header role="banner">
+    <nav aria-label="Primary">
+      <a href="index.html" class="nav-brand">A & F</a>
+      <button class="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="gallery.html">Our Story</a></li>
+        <li><a href="memories-2025.html">Kenangan 2025</a></li>
+        <li><a class="active-link" href="anniversary.html" aria-current="page">Anniversary</a></li>
+        <li><a href="wave-to-earth.html">Wave to Earth</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <section class="anniv-hero">
+    <div class="anniv-hero-content">
+      <span class="anniv-badge">10 Juni 2025 — 10 Juni 2026</span>
+      <h1 class="anniv-title">Happy 1st Anniversary</h1>
+      <p class="anniv-subtitle">Satu tahun penuh cerita, tawa, dan cinta yang terus bertumbuh.</p>
+      <div class="anniv-date-ring">
+        <span class="anniv-ring-text">1</span>
+        <span class="anniv-ring-label">Tahun</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Letter Section -->
+  <section class="anniv-letter">
+    <div class="section-header">
+      <span class="section-badge">Dari Hati</span>
+      <h2 class="section-title">Untukmu, Sayang</h2>
+      <div class="section-divider"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="anniv-letter-card">
+      <div class="anniv-letter-body">
+        <p>Moment ini kamu kasih ke aku tepat di 10 Juni kemarin yang dimana aku baru pertama kali ngerasain dan ngejalanin hubungan selama 1 tahun.</p>
+        <p>Terimakasih banyak sayang atas hubungan yang telah kita bangun dan kamu juga bikin aku banyak belajar di sepanjang 1 tahun hubungan kita ke belakangan.</p>
+        <p>Semoga di tahun kedua yang sedang berjalan ini aku bisa lebih dewasa dan menurunkan ego aku sebagai seorang lelaki — kamu sayang sama aku, juga bisa lebih ngertiin kamu sayang ke depannya.</p>
+        <p>Memang sekarang berbeda karena skala prioritasnya banyak dan kapasitasnya sama-sama penting juga.</p>
+      </div>
+      <footer class="anniv-letter-footer">
+        <span>Dengan cinta,</span>
+        <span class="anniv-signature">Felixander</span>
+      </footer>
+    </div>
+  </section>
+
+  <!-- Milestones -->
+  <section class="anniv-milestones">
+    <div class="section-header">
+      <span class="section-badge">Perjalanan Kita</span>
+      <h2 class="section-title">365 Hari Bersama</h2>
+      <div class="section-divider"><span></span><span></span><span></span></div>
+    </div>
+
+    <div class="anniv-timeline">
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">10 Juni 2025</span>
+          <h4>Hari Pertama</h4>
+          <p>Dicomblangin Devia, dan dari situlah semuanya bermula. Jadian tepat di tanggal ini.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">26 Juni 2025</span>
+          <h4>Ulang Tahun Felix</h4>
+          <p>Tiba-tiba dibawa ke rumah dan ketemu mamah — momen yang bikin hubungan makin serius.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">2025</span>
+          <h4>Wave to Earth Concert</h4>
+          <p>Nonton konser bareng pertama kali — sharing new experience yang bikin kita makin dekat.</p>
+        </div>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-content">
+          <span class="timeline-date">10 Juni 2026</span>
+          <h4>1 Tahun Bersama</h4>
+          <p>Merayakan satu tahun yang penuh pasang surut, tapi tetap saling kuat. Alhamdulillah.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Closing -->
+  <section class="anniv-closing">
+    <blockquote class="wave-big-quote">
+      "Satu tahun bukan sekadar angka — itu adalah bukti bahwa kita memilih untuk tetap bersama, setiap hari, tanpa syarat."
+    </blockquote>
+    <div style="margin-top:32px;text-align:center">
+      <a href="gallery.html" class="btn btn-primary btn-small">Lihat Kisah Kita</a>
+    </div>
+  </section>
+
+  <script src="Script.Js" defer></script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function(){
+    var canvas = document.getElementById('anniv-particles');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+    var particles = [];
+    var colors = ['#e8a0bf','#c9a87c','#ffd6e7','#b8a9d4','#ffffff'];
+    var rafId = null;
+
+    function resize(){
+      var r = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+      canvas.width = Math.floor(innerWidth * r);
+      canvas.height = Math.floor(innerHeight * r);
+      canvas.style.width = '100%';
+      canvas.style.height = '100%';
+      ctx.setTransform(r,0,0,r,0,0);
+      init();
+    }
+
+    function init(){
+      particles = [];
+      var n = Math.max(20, Math.floor((innerWidth * innerHeight) / 15000));
+      for (var i = 0; i < n; i++){
+        particles.push({
+          x: Math.random() * innerWidth,
+          y: Math.random() * innerHeight,
+          r: Math.random() * 2.5 + 0.5,
+          dx: (Math.random() - 0.5) * 0.25,
+          dy: (Math.random() - 0.5) * 0.25,
+          c: colors[Math.floor(Math.random() * colors.length)],
+          a: Math.random() * 0.35 + 0.08
+        });
+      }
+    }
+
+    function draw(){
+      rafId = requestAnimationFrame(draw);
+      ctx.clearRect(0,0,innerWidth,innerHeight);
+      for (var i = 0; i < particles.length; i++){
+        var p = particles[i];
+        p.x += p.dx; p.y += p.dy;
+        if (p.x < -10) p.x = innerWidth + 10;
+        if (p.x > innerWidth + 10) p.x = -10;
+        if (p.y < -10) p.y = innerHeight + 10;
+        if (p.y > innerHeight + 10) p.y = -10;
+        ctx.globalAlpha = p.a;
+        ctx.fillStyle = p.c;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+    }
+
+    resize();
+    if (!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) draw();
+    window.addEventListener('resize', resize, { passive: true });
+    document.addEventListener('visibilitychange', function(){
+      if (document.hidden) { if (rafId) cancelAnimationFrame(rafId); rafId = null; }
+      else if (!rafId) draw();
+    });
+  });
+  </script>
+</body>
+</html>
