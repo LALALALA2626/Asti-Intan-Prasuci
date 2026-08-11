@@ -4,7 +4,7 @@
 
 // === Birthday Lock Screen ===
 (function birthdayLock() {
-  var unlockDate = new Date('2026-08-11T00:00:00+07:00');
+  var unlockDate = new Date('2026-08-16T00:00:00+07:00');
   var now = new Date();
   if (now >= unlockDate) return;
 
@@ -943,7 +943,7 @@ document.addEventListener('DOMContentLoaded', function () {
 // Fireworks for Birthday Unlock
 // ============================================================
 (function initFireworks() {
-  var unlockDate = new Date('2026-08-11T00:00:00+07:00');
+  var unlockDate = new Date('2026-08-16T00:00:00+07:00');
   var diff = unlockDate - Date.now();
   if (diff > 0 || diff < -60000) return;
 
