@@ -640,3 +640,346 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   };
 })();
+
+
+// ============================================================
+// Loading Screen
+// ============================================================
+(function initLoader() {
+  var loader = document.createElement('div');
+  loader.id = 'page-loader';
+  loader.innerHTML = '<span class="loader-logo">A & F</span><div class="loader-bar"><div class="loader-bar-inner"></div></div>';
+  document.body.prepend(loader);
+
+  window.addEventListener('load', function () {
+    setTimeout(function () {
+      loader.classList.add('done');
+      setTimeout(function () { loader.remove(); }, 700);
+    }, 1600);
+  });
+})();
+
+
+// ============================================================
+// Scroll Reveal Animations
+// ============================================================
+(function initReveal() {
+  var selectors = [
+    '.section-header', '.video-card', '.memory-card', '.reason-card',
+    '.wave-korean-card', '.wave-personal-message', '.wave-big-quote',
+    '.wave-spotify-section', '.wish-section',
+    '.anniv-milestone', '.gallery-card'
+  ];
+
+  function addRevealClass() {
+    selectors.forEach(function (sel) {
+      var els = document.querySelectorAll(sel);
+      els.forEach(function (el, i) {
+        if (!el.classList.contains('reveal') && !el.classList.contains('reveal-left') && !el.classList.contains('reveal-scale')) {
+          el.classList.add('reveal');
+          el.style.transitionDelay = (i % 4) * 0.08 + 's';
+        }
+      });
+    });
+  }
+
+  function observe() {
+    var items = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+    if (!items.length) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    items.forEach(function (el) { observer.observe(el); });
+  }
+
+  addRevealClass();
+  if ('IntersectionObserver' in window) observe();
+  else document.querySelectorAll('.reveal,.reveal-left,.reveal-right,.reveal-scale').forEach(function (el) { el.classList.add('visible'); });
+})();
+
+
+// ============================================================
+// Page Transitions
+// ============================================================
+(function initPageTransitions() {
+  document.addEventListener('click', function (e) {
+    var link = e.target.closest('a[href]');
+    if (!link) return;
+    var href = link.getAttribute('href');
+    if (!href || href.startsWith('#') || href.startsWith('http') || href.startsWith('mailto') || e.ctrlKey || e.metaKey) return;
+    if (href.indexOf('.html') === -1) return;
+
+    e.preventDefault();
+    document.body.classList.add('page-transition-out');
+    setTimeout(function () { window.location.href = href; }, 400);
+  });
+})();
+
+
+// ============================================================
+// Parallax Background Orbs
+// ============================================================
+(function initParallax() {
+  var reduced = false;
+  try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) {}
+  if (reduced) return;
+
+  var bg = document.createElement('div');
+  bg.className = 'parallax-bg';
+  bg.innerHTML = '<div class="parallax-orb parallax-orb-1"></div><div class="parallax-orb parallax-orb-2"></div><div class="parallax-orb parallax-orb-3"></div>';
+  document.body.prepend(bg);
+
+  var orbs = bg.querySelectorAll('.parallax-orb');
+  var speeds = [0.03, 0.05, 0.02];
+  var ticking = false;
+
+  window.addEventListener('scroll', function () {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () {
+      var scrollY = window.scrollY;
+      for (var i = 0; i < orbs.length; i++) {
+        orbs[i].style.transform = 'translateY(' + (scrollY * speeds[i] * -1) + 'px)';
+      }
+      ticking = false;
+    });
+  }, { passive: true });
+})();
+
+
+// ============================================================
+// Photo Lightbox
+// ============================================================
+(function initLightbox() {
+  if (document.getElementById('lightbox')) return;
+  var lbEl = document.createElement('div');
+  lbEl.id = 'lightbox';
+  lbEl.innerHTML =
+    '<button class="lb-close" aria-label="Close">&times;</button>' +
+    '<button class="lb-nav lb-prev" aria-label="Previous">&#8249;</button>' +
+    '<img src="" alt="Photo">' +
+    '<button class="lb-nav lb-next" aria-label="Next">&#8250;</button>' +
+    '<span class="lb-counter"></span>';
+  document.body.appendChild(lbEl);
+
+  var img = lbEl.querySelector('img');
+  var counter = lbEl.querySelector('.lb-counter');
+  var photos = [];
+  var idx = 0;
+  var touchStartX = 0;
+
+  function collectPhotos() {
+    photos = [];
+    var imgs = document.querySelectorAll(
+      '.gallery-card img, .memory-photo, .li-mosaic img, .li-ribbon-track img'
+    );
+    var seen = {};
+    imgs.forEach(function (i) {
+      var src = i.src;
+      if (src && !seen[src]) { seen[src] = true; photos.push(src); }
+    });
+  }
+
+  function show(i) {
+    idx = i;
+    img.src = photos[idx];
+    counter.textContent = (idx + 1) + ' / ' + photos.length;
+  }
+
+  function open(src) {
+    collectPhotos();
+    var i = photos.indexOf(src);
+    if (i === -1) { photos.unshift(src); i = 0; }
+    show(i);
+    lbEl.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    lbEl.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function prev() { show((idx - 1 + photos.length) % photos.length); }
+  function next() { show((idx + 1) % photos.length); }
+
+  document.addEventListener('click', function (e) {
+    var clickedImg = e.target.closest(
+      '.gallery-card img, .memory-photo, .li-mosaic img'
+    );
+    if (clickedImg && clickedImg.src) {
+      e.preventDefault();
+      open(clickedImg.src);
+    }
+  });
+
+  lbEl.querySelector('.lb-close').addEventListener('click', close);
+  lbEl.querySelector('.lb-prev').addEventListener('click', prev);
+  lbEl.querySelector('.lb-next').addEventListener('click', next);
+
+  lbEl.addEventListener('click', function (e) {
+    if (e.target === lbEl) close();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (!lbEl.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') prev();
+    if (e.key === 'ArrowRight') next();
+  });
+
+  lbEl.addEventListener('touchstart', function (e) { touchStartX = e.changedTouches[0].clientX; }, { passive: true });
+  lbEl.addEventListener('touchend', function (e) {
+    var dx = e.changedTouches[0].clientX - touchStartX;
+    if (Math.abs(dx) > 50) { dx > 0 ? prev() : next(); }
+  }, { passive: true });
+})();
+
+
+// ============================================================
+// Wish Jar
+// ============================================================
+(function initWishJar() {
+  var container = document.querySelector('.wish-jar-container');
+  if (!container) return;
+
+  var wishes = [
+    { icon: '✨', text: 'Semoga setiap langkahmu selalu dipenuhi keberanian untuk mengejar hal-hal yang kamu cintai.' },
+    { icon: '\u{1F338}', text: 'Semoga kamu selalu dikelilingi orang-orang yang menghargai kebaikan hatimu.' },
+    { icon: '\u{1F319}', text: 'Semoga di malam-malam yang berat, kamu selalu ingat bahwa ada yang mendoakanmu tanpa henti.' },
+    { icon: '☕', text: 'Semoga pagi-pagimu selalu dimulai dengan perasaan damai dan harapan baru.' },
+    { icon: '\u{1F33B}', text: 'Semoga kamu tumbuh menjadi versi terbaik dirimu, tapi tetap jadi kamu yang aku kenal.' },
+    { icon: '\u{1F4AB}', text: 'Semoga semesta selalu konspirasi untuk membahagiakanmu.' },
+    { icon: '\u{1F496}', text: 'Semoga cinta yang kamu berikan ke dunia kembali kepadamu berlipat ganda.' },
+    { icon: '\u{1F30A}', text: 'Semoga kamu menemukan kedamaian di tengah hiruk pikuk kehidupan.' },
+    { icon: '\u{1F3B5}', text: 'Semoga hidup ini selalu punya lagu yang membuatmu tersenyum.' },
+    { icon: '\u{1F31F}', text: 'Semoga kamu selalu punya alasan untuk tertawa setiap hari.' }
+  ];
+  var used = [];
+
+  var backdrop = document.createElement('div');
+  backdrop.className = 'wish-backdrop';
+  document.body.appendChild(backdrop);
+
+  var popup = document.createElement('div');
+  popup.className = 'wish-popup';
+  popup.innerHTML = '<div class="wish-popup-icon"></div><p></p><span class="wish-popup-close">Tutup</span>';
+  document.body.appendChild(popup);
+
+  function showWish() {
+    if (used.length >= wishes.length) used = [];
+    var available = wishes.filter(function (_, i) { return used.indexOf(i) === -1; });
+    var pick = Math.floor(Math.random() * available.length);
+    var realIdx = wishes.indexOf(available[pick]);
+    used.push(realIdx);
+
+    popup.querySelector('.wish-popup-icon').textContent = wishes[realIdx].icon;
+    popup.querySelector('p').textContent = wishes[realIdx].text;
+    popup.classList.add('show');
+    backdrop.classList.add('show');
+  }
+
+  function hideWish() {
+    popup.classList.remove('show');
+    backdrop.classList.remove('show');
+  }
+
+  container.addEventListener('click', showWish);
+  popup.querySelector('.wish-popup-close').addEventListener('click', hideWish);
+  backdrop.addEventListener('click', hideWish);
+})();
+
+
+// ============================================================
+// Easter Egg — Konami Code
+// ============================================================
+(function initEasterEgg() {
+  var code = [38, 38, 40, 40, 37, 39, 37, 39, 66, 65];
+  var pos = 0;
+
+  document.addEventListener('keydown', function (e) {
+    if (e.keyCode === code[pos]) {
+      pos++;
+      if (pos === code.length) {
+        pos = 0;
+        showEasterEgg();
+      }
+    } else {
+      pos = 0;
+    }
+  });
+
+  function showEasterEgg() {
+    if (document.getElementById('easter-egg')) return;
+    var egg = document.createElement('div');
+    egg.id = 'easter-egg';
+    egg.style.cssText = 'position:fixed;inset:0;z-index:90000;background:rgba(8,5,16,0.96);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;animation:fadeIn 0.5s ease-out;cursor:pointer';
+    egg.innerHTML =
+      '<span style="font-size:4rem;margin-bottom:24px">\u{1F49D}</span>' +
+      '<h2 style="font-family:Great Vibes,cursive;font-size:clamp(2rem,6vw,3.5rem);background:linear-gradient(135deg,#e8a0bf,#f0d5a8);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:24px">Kamu Menemukan Rahasiaku!</h2>' +
+      '<p style="font-family:Playfair Display,serif;font-style:italic;font-size:1rem;color:rgba(255,255,255,0.65);max-width:500px;line-height:1.9;margin-bottom:16px">Dari semua orang di dunia ini, aku memilihmu. Bukan karena kamu sempurna, tapi karena kamu sempurna untukku.</p>' +
+      '<p style="font-family:Playfair Display,serif;font-style:italic;font-size:1rem;color:rgba(255,255,255,0.65);max-width:500px;line-height:1.9;margin-bottom:16px">Setiap detik bersamamu adalah hadiah. Setiap senyummu adalah alasanku untuk terus berjuang.</p>' +
+      '<p style="font-family:Great Vibes,cursive;font-size:clamp(1.5rem,4vw,2.5rem);background:linear-gradient(135deg,#e8a0bf,#c9b3e0);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:16px">Aku mencintaimu, selamanya.</p>' +
+      '<span style="display:block;margin-top:32px;font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.2)">Klik di mana saja untuk menutup</span>';
+    document.body.appendChild(egg);
+
+    egg.addEventListener('click', function () {
+      egg.style.opacity = '0';
+      egg.style.transition = 'opacity 0.4s';
+      setTimeout(function () { egg.remove(); }, 400);
+    });
+  }
+})();
+
+
+// ============================================================
+// Fireworks for Birthday Unlock
+// ============================================================
+(function initFireworks() {
+  var unlockDate = new Date('2026-08-16T00:00:00+07:00');
+  var diff = unlockDate - Date.now();
+  if (diff > 0 || diff < -60000) return;
+
+  var colors = ['#e8a0bf', '#c9b3e0', '#f0d5a8', '#ff6b95', '#ffd700', '#fff'];
+
+  function burst(x, y) {
+    var container = document.createElement('div');
+    container.className = 'firework';
+    container.style.left = x + 'px';
+    container.style.top = y + 'px';
+    document.body.appendChild(container);
+
+    for (var i = 0; i < 30; i++) {
+      var p = document.createElement('div');
+      p.className = 'firework-particle';
+      var angle = (Math.PI * 2 / 30) * i;
+      var dist = 60 + Math.random() * 100;
+      p.style.setProperty('--fx', Math.cos(angle) * dist + 'px');
+      p.style.setProperty('--fy', Math.sin(angle) * dist + 'px');
+      p.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+      container.appendChild(p);
+    }
+    setTimeout(function () { container.remove(); }, 1500);
+  }
+
+  function launchShow() {
+    var w = window.innerWidth, h = window.innerHeight;
+    for (var i = 0; i < 8; i++) {
+      (function (delay) {
+        setTimeout(function () {
+          burst(Math.random() * w * 0.8 + w * 0.1, Math.random() * h * 0.5 + h * 0.1);
+        }, delay);
+      })(i * 300);
+    }
+  }
+
+  setTimeout(launchShow, 1000);
+  setTimeout(launchShow, 4000);
+})();
